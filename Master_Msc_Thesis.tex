@@ -1,0 +1,159 @@
+\documentclass[12pt, proposal, subfigure]{uofsthesis-cs}
+\usepackage{graphicx} % For images
+\usepackage{subfigure} % For side by side images
+\usepackage{textcomp} % To use the degree symbol with unicode
+\usepackage{textgreek} % To use Greek letters outside of math mode
+\usepackage{mathrsfs} % For fancy letters, such as the curvy R for responsivity
+\usepackage[table]{xcolor} % for table shading
+\usepackage{amsmath, bm} % for matrices and bolding math
+
+% Documentation for the uofsthesis-cs class is given in uofsthesis-cs.dvi
+% 
+% It is recommended that you read the CGSR thesis preparation
+% guidelines before proceeding.
+% They can be found at http://www.usask.ca/cgsr/thesis/index.htm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FRONTMATTER - In this section, specify information to be used to
+% typeset the thesis frontmatter.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% THESIS TITLE
+\title{Thermal-Mechanical Design and MCT Detector Characterization of the Limb Imaging Fourier Transform Spectrometer Experiment (LIFE)}
+
+% AUTHOR'S NAME
+\author{Connor J. Schentag}
+
+% DEGREE SOUGHT.  
+\degree{\MSc}         
+
+% THESIS DEFENCE DATE
+% Should be month/year, e.g. July 2004
+\defencedate{May/2020}
+
+% NAME OF ACADEMIC UNIT
+\department{Physics \& Engineering Physics}
+
+% PERMISSION TO USE ADDRESS
+\ptuaddress{Head of the Department of Physics \& Engineering Physics\\
+163 Physics Building, 116 Science Place\\
+University of Saskatchewan\\
+Saskatoon, Saskatchewan, 57N 5E2, Canada\\
+
+OR\\
+
+Dean\\
+College of Graduate and Postdoctoral Studies\\
+University of Saskatchewan\\
+116 Thorvaldson Building, 110 Science Place\\
+Saskatoon, Saskatchewan, S7N 5C9, Canada
+}
+
+% ABSTRACT
+\abstract{
+This is the abstract of my thesis.  
+}
+
+% THESIS ACKNOWLEDGEMENTS -- This can be free-form.
+\acknowledgements{
+Thanks Adam \& Doug.
+}
+
+% THESIS DEDICATION -- Also free-form.  If you don't want a dedication, comment out the following
+% line.
+\dedication{I dedicate this to my cat, Chester. Thanks for always being there to distract me from getting shit done.}
+
+% LIST OF ABBREVIATIONS
+\loa{
+\abbrev{ACE}{Atmospheric Chemistry Experiment}
+\abbrev{BBEBox}{Blackbody Electronics Box}
+\abbrev{CAD}{Computer Assisted Design}
+\abbrev{CATS}{Canadian Atmospheric Tomography System}
+\abbrev{CSA}{Canadian Space Agency}
+\abbrev{EBox}{Electronics Box}
+\abbrev{ECCC}{Environment and Climate Change Canada}
+\abbrev{FEA}{Finite Element Analysis}
+\abbrev{FOV}{Field of View}
+\abbrev{FTS}{Fourier Transform Spectrometer}
+\abbrev{GLORIA}{Gimballed Limb Observer for Radiance Imaging of the Atmosphere}
+\abbrev{IFTS}{Imaging Fourier Transform Spectrometer}
+\abbrev{IR}{Infra-Red}
+\abbrev{LOF}{List of Figures}
+\abbrev{LOS}{Line of Sight}
+\abbrev{LOT}{List of Tables}
+\abbrev{LIFE}{Limb Imaging Fourier Transform Spectrometer Experiment}
+\abbrev{MCT/HgCdTe}{Mercury Cadmium Telluride}
+\abbrev{MIPAS}{Michelson Interferometer for Passive Atmospheric Sounding}
+\abbrev{PV}{Photovoltaic}
+\abbrev{PC}{Photoconductive}
+\abbrev{SPARC}{Stratosphere-troposphere Processes And their Role in Climate}
+\abbrev{TVAC}{Thermal Vacuum}
+\abbrev{UTLS}{Upper Troposphere - Lower Stratosphere}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% END OF FRONTMATTER SECTION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% Typeset the title page
+\maketitle
+
+% Typeset the frontmatter.  
+\frontmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MAIN CHAPTERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input chap1_intro.tex % Introduction
+\input chap2_bg.tex % Background
+\input chap3_thermal_mech.tex % Thermal-Mechanical Design
+\input chap4_postflight.tex
+\input chap5_detector.tex % Detector Characterization
+\input chap6_future.tex % Future Work
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The Bibliograpy should go here. BEFORE appendices!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Typeset the Bibliography.  The bibliography style used is "plain".
+% Optionally, you can specify the bibliography style to use:
+% \uofsbibliography[stylename]{yourbibfile}
+
+\uofsbibliography{references.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDICES
+%
+% Any chapters appearing after the \appendix command get numbered with
+% capital letters starting with appendix 'A'.
+% New chapters from here on will be called 'Appendix A', 'Appendix B'
+% as opposed to 'Chapter 1', 'Chapter 2', etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Activate thesis appendix mode.
+\uofsappendix
+
+% Put appendix chapters in the appendices environment so that they appear correctly
+% in the table of contents.  You can use \input's here as well.
+\begin{appendices}
+
+\chapter{Sample Appendix}
+
+Stuff for this appendix goes here.
+
+\end{appendices}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%% Helpful Latex notes %%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% {Placing a figure in the correct location}
+% h (here) - same location
+% t (top) - top of page
+% b (bottom) - bottom of page
+% p (page) - on an extra page
+% ! (override) - will force the specified location
