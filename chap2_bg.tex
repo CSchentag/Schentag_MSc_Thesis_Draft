@@ -126,19 +126,43 @@ The spectral intensity of the radiation emitted from an ideal blackbody surface 
 
 Here $h$ is Planck's constant, $c$ is the speed of light, $\lambda$ is the wavelength of incoming radiation, $k_B$ is the Boltzmann constant ($1.38\cdot 10^{-23}$ J/K), and T is the blackbody temperature~\citep{Heat_Transfer_Basics}. This equation gives the Planck curve of the radiation emitted from an object, and is important to the calibration of thermal imaging instruments. This equation is used when calculating spectral radiances for the LIFE detector responsivity, discussed in Chapter \ref{detector}. It units are $Wm^{-2}sr^{-1}$.
 
-The energy emitted from the blackbody surface reaches a theoretical maximum due to the emissivity of 1, and this maximum is given by the Stefan-Boltzmann Law. This law is calculated by the integration of wavelength of Equation \ref{plancks_law} from zero to infinite wavelength. This equation, which gives the flux of energy radiation $q$ in $W/m^2$, is shown in Equation \ref{SB_law}
+The energy emitted from the blackbody surface reaches a theoretical maximum due to the emissivity of 1, and this maximum is given by the Stefan-Boltzmann Law. This law is calculated by the integration of wavelength of Equation \ref{plancks_law} from zero to infinite wavelength~\citep{Heat_Transfer_Basics}. This equation, which gives the flux of energy radiation for a blackbody $q_b$ in $W/m^2$, is shown in Equation \ref{SB_law}.
 
 \begin{equation} \label{SB_law}
-    q(T) = \epsilon \sigma T^{4}A
+    q_b(T) = \sigma T^{4}
 \end{equation}
 
-where the Stefan-Boltzmann constant, \textsigma, is 5.670374 × 108 W/m\textsuperscript{2}K\textsuperscript{4}, {\textepsilon} is the emissivity of the surface, \textit{A} is the area of the surface, and \textit{T} is the absolute temperature. This formula can be altered for an object radiating to its surroundings, shown in Equation \ref{SB_surroundings}.
+where the Stefan-Boltzmann constant, \textsigma, is $5.67\cdot10^8$ W/m\textsuperscript{2}K\textsuperscript{4} (equal to all constants left from integration), {\textepsilon} is the emissivity of the surface, and \textit{T} is the absolute temperature. For non-blackbodies, the heat flux emitted is the blackbody heat flux multiplied by the emissivity. The total energy radiated can also be shown by multiplying by the area, $A$. Thus the Stefan-Boltzmann Law equation for general surfaces is given below as Equation \ref{SB_law_general}~\citep{Heat_Transfer_Basics}.
 
-\begin{equation} \label{SB_surroundings}
-    q(T) = \epsilon \sigma (T_h^4-T_c^4)A_h
+\begin{equation} \label{SB_law_general}
+    q(T) = \epsilon \sigma T^{4} A
 \end{equation}
 
-where T\textsubscript{h} is the temperature of the hot body, T\textsubscript{c} is the temperature of the cold blackbody, and A\textsubscript{h} is the surface area of the hot body~\citep{heat_transfer_textbook}~\citep{FEA_SW}. When dealing with thermal design in a vacuum, the surface area and emissivity are two variables that can be controlled and help to either dissipate or maintain heat.
+In most designs, radiation from one surface will intersect with objects in its surroundings. Equation \ref{SB_law} and \ref{SB_law_general} both assume the radiated energy is absorbed by the medium or far surroundings, thus having no affect on the emitting object. In reality, an object emitting energy will have energy emitted to it by a nearby body. The Stefan-Boltzmann Law must be altered for this scenario.
+
+The simplest form of this problem is that all radiation from a blackbody object, say object 1, is absorbed by another blackbody object, say object 2. Likewise, all radiation from object 2 is radiated to object 1 and absorbed. The net heat transferred from object 1 to object 2, known as $Q_{net}$, is the difference of the radiation from object 1 to object 2 and the radiation from object 2 to 1~\citep{heat_transfer_textbook}. This is shown in Equation \ref{SB_surroundings}.
+
+\begin{equation}\label{SB_surroundings}
+    Q_{net} = A_1 q_b (T_1) - A_1 q_b (T_2) = A_1 \sigma (T_1^4 - T_2^4)
+\end{equation}
+
+Here, $T_1$ is the temperature of the first object, $T_2$ is the temperature of the second object, $A_1$ is the area of the first object, $q_b$ is the heat flux emitted from the first object, and {\textsigma} is the Stefan-Bolztmann constant. Theoretically, this often is good enough. However, for thermal simulations, the more realistic scenario is that the objects see other objects too, and not all radiation from one object is absorbed by one other object. To account for this, a view factor $F_{1-2}$ must be included in the equation. Essentially, this view factor is how well the surface 'sees' the other surface~\citep{heat_transfer_textbook}~\citep{FEA_SW}. Assuming two small areas $A_1$ and $A_2$, the view factor can be calculated using Equation \ref{view_factor}.
+
+\begin{equation}\label{view_factor}
+    F_{1-2} = \frac{1}{A_1} \Int_{A_1} \Int_{A_2} \frac{cos \theta_1 cos \theta_2}{\pi R_{1-2}^2} \,dA_1\,dA_2
+\end{equation}
+
+Here, $\theta_1$ and $\theta_2$ are the angles between unit normals for each area, and $R_{ij}$ is the line connecting the two areas. This equation is inserted into Equation \ref{SB_surroundings} with the surface emissivity to create Lambert's Law, giving the heat flow rate between two gray diffuse surfaces, shown in Equation \ref{Lamberts_Law}.
+
+\begin{equation}\label{Lamberts_Law}
+    Q_{net} = \epsilon A_1 \sigma F_{1-2} (T_1^4 - T_2^4)
+\end{equation}
+
+This question assumes the surfaces have the same emissivity. If they have different values, this equation becomes more complex.
+
+As discussed in Section \ref{FEA}, a thermal simulation often breaks a surface into many small surfaces to be able to run the simulation. As such, this equation, particularly the complex Equation \ref{view_factor}, must be solved hundreds of thousands of times for each simulation. As such, it requires major computational power to run simulations that include surface-to-surface emissivity. For the purpose of saving time in simulations, this is often approximated by estimating the ambient temperature an object will see when radiating, along with an estimated view factor, and changing if necessary. This will make simulations less accurate but many more simulations are able to be run, so these settings can be altered with trial and error until they are deemed accurate.
+
+ In relation to the thermal design, which is discussed in detail in Chapter \ref{thermal}, the two main variables that can be altered when running simulations and testing designs are the surface area and emissivity. Choosing the right material to either maintain or emit heat through radiation to stop freezing or overheating, as well as designing to allow heat to be dumped to less heat-sensitive parts of the instrument through conductivity, are critical parts of thermal design.
 
 \subsubsection{Convection}
 [TODO]
