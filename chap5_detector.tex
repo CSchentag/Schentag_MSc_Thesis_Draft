@@ -1,11 +1,22 @@
 \chapter{Detector Characterization} \label{detector}
 
-\section{ABB Detector}
-Background of detector (say its a 1x16 pixel array, infrared associates, etc.)
-[TODO]
+\section{Overview}
+One of the core aspects of the LIFE instrument, along with the Fourier Transfer Spectrometer, is the Mercury Cadmium Telluride infrared detector. This detector images the atmosphere and blackbodies through the optical system and the FTS to create raw interferograms, which are saved to the computer. To optimize the interferograms and the raw data as a whole, the detector must be operating optimally. There are various parts of MCT detectors that must be carefully characterized so that the data is as useful as possible. The task of characterizing and optimizing the LIFE MCT detector forms the second part of this thesis. This chapter provides an overview of the MCT detector specific to the LIFE instrument in Section \ref{ABB_detector}, as well as the work originally done to verify the detector was working correctly in Section \ref{detector_verif}. Afterwards, various measurements were taken in the lab to optimize a number of different parts of the detector, which is described in Section \ref{detector_char}. This was all done prior to flight to optimize the data; post-flight, the data was analyzed from a detector noise standpoint to see the effect from various stages of flight. This is discussed in Section \ref{detector_noise_flight}. Finally, the performance of the detector as a whole during flight is examined in Section \ref{detector_flight_performance}.
 
-\section{Detector Verification}
-In the case of the LIFE MCT detector, which was a custom purchase from ABB Inc., two aspects can be altered that allow for the characterization and optimization of the instrument: bias voltage and offset current. These settings are related to the raw ADC output value of the detector system through Equation \ref{ADC_output_ABB} and \ref{ADC_I_detector}, which are specific to the LIFE system as provided by ABB.
+\section{ABB Detector}\label{ABB_detector}
+The LIFE MCT Infrared detector was a custom purchase with the FTS from ABB, and is designed to function optimally with our system and for our specifications. It is manufactured by InFraRed Associates, and interfaces with the two custom amplification and digitization data acquisition (DAQ) boards also provided by ABB. The linear array of the MCT detector is made up of 16 0.25mm\textsuperscript{2} square pixels, which respond to incident radiation from 2-14\textmu m, as is expected from an MCT-type detector. As described in Section \ref{IR_detector_types}, MCT detectors must be cooled to low temperatures to avoid saturation. The InFraRed Associates MCT Detector comes with an attached Stirling Cooler manufactured by Ricor, that cools the pixels to 77K. The 16 pixels provide 16 interferograms, which are split into two groups of eight and sent to the two DAQ boards where the signals are amplified. The two boards are connected to a computer where the data is then stored. These specifications are all given directly to the LIFE research team by ABB. An image of the LIFE detector is in Figure \ref{fig:life_detector_from_ICD}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\linewidth]{chap5_images/Detector_from_ICD.png}
+  \caption{Image of the MCT Detector used in the LIFE instrument.}
+  \label{fig:life_detector_from_ICD}
+\end{figure}
+
+\section{Detector Verification}\label{detector_verif}
+Before the detector could begin to be characterized, work was done to ensure that the detector was operating as expected. This work, and other optimization work, needed to be done in-house as the detector was originally designed and programmed to run in a different mode than in the LIFE application known as \textit{constant current}. In this mode, a constant current flows through the detector and a change in voltage is measured. In the ABB application in conjunction with the FTS, \textit{constant voltage} mode is used. Here, the a constant voltage known as the \textit{bias voltage} flows through the detector, and a current change can be measured. Also, verification tests allowed familiarization with the detector and its various settings before attempting optimization. These tests were completed with the lab-bench version of the instrument; as in they were completed with the MCT and FTS mounted on an optical bench rather than in the flight configuration. This will cause some errors in the data, as the system was not as well aligned as in the flight configuration, but it suffices for the optimization necessary. Tests were planned to be completed in flight configuration as well, but due to troubleshooting leading to the launch and damage sustained during the descent, these were not able to be completed.
+
+To perform all verification and optimization work, there are two particular settings that can be changed via software for the LIFE MCT detector: The bias voltage, as described previously, and the offset current. The offset current raises and lowers the baseline of the measured current, and should be altered so that it does not dip below zero or saturate. These settings are related to the raw ADC output value of the detector through Equation \ref{ADC_output_ABB} and \ref{ADC_I_detector}, which are specific to the LIFE system as provided by ABB.
 
 \begin{equation} \label{ADC_output_ABB}
     ADC_{raw\:value} = \frac{(I_{detector} + I_{offset})(-G)(2^{24}-1)}{ADC\:Voltage\:Reference\:Range}
@@ -15,42 +26,90 @@ In the case of the LIFE MCT detector, which was a custom purchase from ABB Inc.,
     I_{detector} = \frac{V_{bias}}{R_{detector}}
 \end{equation}
 
-For the case of the LIFE MCT detector, the ADC Voltage Reference Range is 4.096V, and R\textsubscript{detector} is a function of the incident infrared optical signal flux. This function is typically linear, and for the LIFE detector over the expected operating range can be assumed to be a constant 50\textOmega. G is the combined gain of all amplifiers, given as 195.65 V/A. As much of Equation \ref{ADC_output_ABB} is made up of constants, it is easier to look at the proportional relationship between the ADC values and the bias voltage and offset current, shown in Equation \ref{ADC_output_proportional}.
+For the case of the LIFE MCT detector, the ADC Voltage Reference Range is 4.096V, and R\textsubscript{detector} is a function of the incident infrared optical signal flux. This function is typically linear, and for the LIFE detector over the expected operating range can be assumed to be a constant 50\textOmega as recommended by ABB. However, as this is only an approximation, it is a source of some non-linearity that must be considered. G is the combined gain of all amplifiers, given as 195.65 V/A by ABB. As much of Equation \ref{ADC_output_ABB} is made up of constants, it is easier to look at the proportional relationship between the ADC values and the bias voltage and offset current, shown in Equation \ref{ADC_output_proportional}.
 
 \begin{equation} \label{ADC_output_proportional}
     ADC_{raw\:value} \propto -\left(\frac{V_{bias}}{R_{detector}} + I_{offset}\right)
 \end{equation}
 
-This equation is now simplified, and it is easier to see the dependencies. This equation can be verified by testing different bias and offset settings. Throughout early 2019, numerous measurements were taken with the detector to determine characteristics to enable optimized measurements. Python software was developed to read these measurements and determine the output of the MCT system. 
+With this simplified equation it is easier to see the dependencies. This forms a simple slope formula, with the bias voltage as the slope and the offset current as the y-intercept. Thus it should be simple to verify the operation of the detector by taking various measurements with changing bias and offset settings. Numerous measurements were taken with the detector of blackbodies, and python software was developed to read these measurements to determine the output of the MCT system.
 
-First, multiple tests were done both with a constant bias voltage and incrementing offset current and vice versa, to verify Equation \ref{ADC_output_proportional}. This was done by taking multiple measurements of various bias voltages and offset currents looking at a hot blackbody at 50° and a cold blackbody at 10°C. Figure \ref{fig:dc_dep_on_bias} shows the result of keeping the current constant and changing the bias voltage.
+It is noted that the output data presented in these tests is known as the \textit{DC Component}, or the mean of the data, over an entire scan of the blackbody. The output data produces a spectra, in the shape of a broad line with a centre spike. It was recommended by ABB that to avoid skewing of the data, the DC Component should be created by averaging a scan with the centre spike removed. Thus the DC Component was created by taking the mean of the data after the centre spike has been removed via a third degree polynomial fit. This DC Component value is the same as the theoretical ADC raw value from Equation \ref{ADC_output_proportional}.
+
+Before changing the bias and offset settings, a simple test was done of taking images of a blackbody with a temperature changing from 25°C to 60°C in 5° increments. This was done to see the ADC output change based on blackbody temperature, giving an idea of the ADC range with different temperatures and the general output of the system. The result is shown in Figure \ref{fig:ADC_dep_on_bb_temp}.
 
 \begin{figure}[h]
-  \includegraphics[width=\linewidth]{chap6_images/verification/dc_component_dependence_on_bias_voltage.png}
+  \centering
+  \includegraphics[width=0.8\linewidth]{chap5_images/DC_dep_on_temp.png}
+  \caption{The result of changing the blackbody temperature on the raw detector signal.}
+  \label{fig:ADC_dep_on_bb_temp}
+\end{figure}
+
+In this plot, the first thing that is noticed is that the trend is overall decreasing with an increase in temperature, which is not expected. Theoretically, the current should increase with an increase in heat flux, thus an increase of ADC values with temperature. It was eventually deduced, by this and other data, that the output of the detector is effectively flipped. This is due to the range of the detector; it is able to measure very low temperatures, but cannot go much higher than what is measured with blackbodies in the lab, around 60°C. Thus, to avoid saturation of the interferogram peak, the output is flipped. This allows the interferogram and detector to avoid saturation while more of the detector temperature range can be used. This result was helpful, as it also led to explanations of strange values for responsivity, which is described in Section \ref{responsivity_sec}.
+
+Beyond the overall decrease in the plot, ideally this should be much more linear. It was theorized that during the tests, the ambient temperature of the room had an effect on the output data. An air conditioning unit in the lab room and near the instrument cycled often, which would cause differing ambient temperatures throughout a test. This ambient temperature could affect the blackbody surfaces that were being imaged, as well as the surface of parts of the instrument that were possible being imaged due to misalignment. A test done by taking images of the blackbodies at a constant temperature over a period of a few hours confirmed that the ambient temperature changes were having an affect on the output data, the results of which is shown in Figure \ref{fig:ADC_dep_on_room_temp}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{chap5_images/DC_dep_on_room_temp.png}
+  \caption{The result of the ambient room temperature changing throughout a longer term test, causing temperature changes in the blackbodies.}
+  \label{fig:ADC_dep_on_room_temp}
+\end{figure}
+
+Although this is an issue that affects the lab data, it is unlikely to occur in the flight configuration of the instrument, as it was designed to be better thermally controlled as well as properly aligned. Ideally this would have been tested further after flight but as mentioned previously there was no opportunity. 
+
+Once these initial measurements were taken, further verification using the bias and offset settings could continue. Two main tests were done, one with constant bias voltages and incrementing offset current, and vice versa. For both tests, specific values were chosen for the constant bias voltage or offset current, respectively. These values were taken from a calibration spreadsheet provided by InfraRed Associates. As stated previously, the calibration would not work for the LIFE application due to it operating in a different mode, but there were specific values chosen for the bias voltage and offset current for all calibration tests; these are shown in Table \ref{vbias_ioffset_table}. As there were a very wide range of possible settings, it was assumed that these values would be reasonable to begin with as they had been chosen by the manufacturer. 
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c| } 
+ \hline
+ \rowcolor{lightgray}
+ Bias voltage $V_{bias}$ [mV] &  Offset Current $I_{offset}$ [mA]\\ 
+ \hline
+  246 & 4 \\ 
+  \hline
+ 431 & 6  \\
+ \hline
+ 625 & 8 \\
+ \hline
+ \end{tabular}
+\end{center}
+\caption{Bias voltage and offset currents as used in the factory calibration, used here as a baseline.}
+\label{vbias_ioffset_table}
+\end{table}
+
+Measurements were done by taking images of a hot blackbody at 50°C and a cold blackbody at 10°C for both tests.
+
+For the first test, the offset chosen was chosen as three constant values based on the factory calibration, and the bias voltage was incremented over a range chosen as 100mV to 1V. The resulting data is shown in Figure \ref{fig:dc_dep_on_bias}. It is noted that the detector was not constrained to the voltage range above, this was based on calibration values; however it was noted by ABB that the range was much larger and there was no danger of destroying the detector with different values. It was still found that beyond this range there was no useful data and all tests were done with these values.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{chap6_images/verification/dc_component_dependence_on_bias_voltage.png}
   \caption{Detector raw data output dependence on bias voltage.}
   \label{fig:dc_dep_on_bias}
 \end{figure}
 
-The resulting dependence is expected. For each bias there is a small change in slope in the linearity of the data, as is expected from Equation \ref{ADC_output_proportional}. It is also downward sloping due to the negative proportionality, which results from the negative gain in the equation. The cold blackbody and hot blackbody lines also overlap as expected, because the offset current raises and lowers the lines while the bias voltage changes the slope, in the same way for both blackbodies. Figure \ref{fig:dc_dep_on_offset} shows the result of keeping the bias voltage constant and changing the offset current.
+The resulting dependence is expected. For each bias there is a small change in slope in the linearity of the data, as is expected from Equation \ref{ADC_output_proportional}. It is also downward sloping due to the negative proportionality, which results from the negative gain in the equation. The lines are all separated by the offset current chosen, also as expected. For each offset current, the cold blackbody measurement and blackbody measurement appear to overlap. However, if the plot is magnified, the cold blackbody data is slightly higher than the hot blackbody data, which matches what would be expected from \ref{fig:ADC_dep_on_bb_temp}; the cold blackbody produces a higher ADC signal due to the signal inversion as described previously. The fact that the lines overlap shows the major effect that altering these settings have on the data; the change in ADC measurements from looking at two different blackbody temperatures is an order of magnitude smaller than the change in ADC measurements from altering settings. Overall, this plot confirms Equation \ref{ADC_output_proportional}. Figure \ref{fig:dc_dep_on_offset} shows the second major test, where the offset current is incremented over a range of 1mA to 10mA, with three bias voltages set according to factory calibration values. As with the bias voltage, the range of the offset current is much larger, but the aforementioned range was chosen to match the range of calibrated values.
 
 \begin{figure}[h]
-  \includegraphics[width=\linewidth]{chap6_images/verification/dc_component_dependence_on_offset_current.png}
+  \centering
+  \includegraphics[width=0.9\linewidth]{chap6_images/verification/dc_component_dependence_on_offset_current.png}
   \caption{Detector raw data output dependence on offset current.}
   \label{fig:dc_dep_on_offset}
 \end{figure}
 
-These results are expected. The plots are linear and changing the bias voltage with different offset currents leads a shift in the DC component. Thus, the detector is operating as expected.
+The results shown in Figure \ref{fig:dc_dep_on_offset} are also as expected. The data is very linear with increasing offset current, and the are split by different bias voltages. The slope is also slightly different for each plot, showing that the bias voltage does not have as large an impact on where the data is in the DC Component range. This would make sense as the function of the offset current is to move the baseline of the data, and the bias voltage is used to tune the responsivity; the results of changing this become more clear when tuning for responsivity. This is the topic of Section \ref{responsivity_sec}.
 
-\section{Characterization}
-Discuss what characterization needs to be done for the detector to get good data.
-[TODO]
+Overall, the results of changing the bias and offset settings on the output data match the equation provided by ABB that describes the system. Thus, the detector is verified to be working properly and as expected, and there is a greater understanding of the effect of altering the settings. Higher level optimization of the detector can now take place.
 
-\subsection{Modulation}
-Discuss modulation of signal to show it makes sense. There may not be enough about this to make a full subsection.
-[TODO]
+\section{Characterization}\label{detector_char}
+To be able to produce the most accurate data possible, the MCT detector needs to be optimized to reduce common problems with MCT's such as non-linearity, and to detect incoming signal as well as possible. The latter corresponds with responsivity, which is discussed first and is the main characteristic to be optimized. A discussion of the calculation method, based on the GLORIA method, is described. A discussion of non-linearity follows, and the methods used to determine this, but the measurements and post-measurement calibrations of non-linearity are out of the scope of thesis.
 
-\subsection{Responsivity}
-The responsivity is determined from the equation developed in~\citep{GLORIA_PhD}, based on measurement results from hot and cold blackbody systems. A blackbody system consisting of three blackbodies, one at a hot temperature, one at a warm temperature, and one at a cold temperature, was procured for this purpose. It is on-board the LIFE instrument so these can be used to calibrate the FTS during flight.
+\subsection{Responsivity}\label{responsivity_sec}
+Responsivity is the measure of how sensitive, or responsive, the detector is to incoming signal. It is typically in units of $ADC\cdot cm/W$, with the length component coming from the spectral dependence, but the spectral dependence can be integrated out if the wavelength limits are known, which they are for a known detector and measured temperatures. Thus the units of responsivity are $ADC/W$, which gives a direct conversion from the input photon counts to power, i.e. the change in power from the input photons, which can easily be converted to the change in current that is measured. Theoretically, a higher responsivity would mean better performance, as the counts measured by the detector cause a larger change in the output current and giving a more accurate reading~\citep{GLORIA_PhD}. However, if this change is too large, it can lead to non-linearity.
+
+The responsivity is determined from an equation developed for the GLORIA instrument, which gives another equation for the raw output signal, similar to Equation \ref{ADC_output_ABB} from ABB. The GLORIA equation is based on measurement results from hot and cold blackbody systems. A blackbody system consisting of three blackbodies, one at a hot temperature, one at a warm temperature, and one at a cold temperature, was procured for this purpose. It is on-board the LIFE instrument so these can be used to calibrate the FTS during flight, as described at length in Chapter \ref{thermal}.
 
 The DC signal measured by the detector is given in Equation \ref{GLORIA_DC_signal_eq}.
 
@@ -66,17 +125,9 @@ Using this equation at hot and cold temperatures, assuming the transmittance of 
     \mathcal{R}_D = \frac{DC_{hbb} - DC_{cbb}}{A_{pix}\Omega_{pix}(L(T_{hbb})-L(T_{cbb}))}
 \end{equation}
 
-Here $DC_{hbb}$ is the DC component of the interferogram signal from the hot blackbody, $DC_{cbb}$ is the DC component of the interferogram signal from the cold blackbody, $L(T_{hbb})$ is the Planck function integrated over the range of wavenumbers for the hot blackbody, and $L(T_{cbb})$ is the Planck function integrated over the range of wavenumbers for the cold blackbody~\citep{GLORIA_PhD}. The results of performing tests and utilizing this equation is below.
+Here $DC_{hbb}$ is the DC component of the interferogram signal from the hot blackbody, $DC_{cbb}$ is the DC component of the interferogram signal from the cold blackbody, $L(T_{hbb})$ is the Planck function integrated over the range of wavenumbers for the hot blackbody, and $L(T_{cbb})$ is the Planck function integrated over the range of wavenumbers for the cold blackbody~\citep{GLORIA_PhD}. 
 
-To determine the settings for the best responsivity, measurements were taken over a range of bias voltage settings with a constant current offset, and using Equation \ref{rearranged_GLORIA_Resp}, the results are shown in Figure \ref{fig:resp_dep_on_bias}.
-
-\begin{figure}[h]
-  \includegraphics[width=\linewidth]{chap6_images/verification/resp_dependence_on_bias.png}
-  \caption{Detector responsivity change with different bias voltage settings.}
-  \label{fig:resp_dep_on_bias}
-\end{figure}
-
-This curve is essentially as expected. As the bias voltage is increased, the responsivity of the detector is increased. Ideally, the responsivity of the detector is as high as possible. However, there is a saturation limit on the bias voltage, where the detector will not operate correctly. This explains the non-linearity of this plot, as the gain in responsivity begins to decline as it reaches saturation levels. The bias voltage eventually chosen through examining the detector responsivity and the resulting data was 431mV, one of the values originally given by the manufacturer. This was done based off looking at various measurements of incrementing bias voltages and offset currents. After examining the data at each of these settings, it was determined that any higher than 500mV, the detector becomes close to the saturation voltage. As 431mV was included in the detector documentation as a known value of calibration from the company, this was deemed a reasonable value to use as the bias voltage. Figure \ref{fig:resp_dep_on_offset} shows the responsivity dependence with constant bias voltages and incrementing offset currents.
+Now that there is an equation for the responsivity of the detector that can be related to the signal output, it can be tested with different inputs and settings on the detector. For all tests, the cold blackbody temperature was set to 10°C and the hot blackbody temperature was set to 50°C, with the wavenumber range set to XXXXX, allowing the integrated planck functions to be calculated. Thus the responsivity between tests was entirely dependent on the DC signal from the hot and cold blackbodies, which the behaviour of is known from tests done in Section \ref{detector_verif}. The same bias voltage and offset ranges were used as the verifications tests, and the first test of the responsivity dependence on offset current is examined. The results of these tests as calculated by Equation \ref{rearranged_GLORIA_Resp} are shown in Figure \ref{fig:resp_dep_on_offset}.
 
 \begin{figure}[h]
   \includegraphics[width=\linewidth]{chap6_images/verification/resp_dependence_on_offset.png}
@@ -84,119 +135,118 @@ This curve is essentially as expected. As the bias voltage is increased, the res
   \label{fig:resp_dep_on_offset}
 \end{figure}
 
-Figure \ref{fig:resp_dep_on_offset} shows that offset current has little effect on the responsivity, which is expected. The lines for each bias are also at different levels, due to the larger bias voltage leading to higher responsivity. Further examination into the responsivity will be done now that the flight is complete, with the full flight setup. In the full flight setup, with a fully aligned instrument and more careful temperature monitoring, a better responsivity can be determined.
+Figure \ref{fig:resp_dep_on_offset} shows that the offset current has little effect on responsivity, with data for each bias voltage being effectively linear. The spacing between each set of data shows the large effect that changing bias has on the data. Now that it is known that the offset current only has the effect of changing the baseline of the data but not the responsivity, the result of changing the bias voltage will be examined. It is done over a range of 100mV to 1V and is shown in Figure \ref{fig:resp_dep_on_bias}
+
+\begin{figure}[h]
+  \includegraphics[width=\linewidth]{chap6_images/verification/resp_dependence_on_bias.png}
+  \caption{Detector responsivity change with different bias voltage settings.}
+  \label{fig:resp_dep_on_bias}
+\end{figure}
+
+This plot shows what is theorized; as the bias voltage increases, the responsivity of the detector increases. Also, the lines all effectively overlap, confirming Figure \ref{fig:resp_dep_on_offset}, showing that the offset current will not have an effect on the final value for responsivity. As mentioned before, theoretically, the responsivity should be as high as possible for the best detector performance, meaning that the bias voltage should be chosen to be at least 1V. However, there is a saturation limit on the bias voltage, where the detector will not operate correctly. This leaders to non-linearity, which can be seen in this plot. The increase in responsivity with bias voltage begins linear but slowly begins to decline as it reaches saturation levels. Further tests in the thermal vacuum environment would show that if the bias voltage became too high, leading to a high responsivity, the detector would not be able to dump enough heat to keep the temperature to 77K. Even after lowering the bias voltage, the detector took almost 2 hours to cool back down to its previous temperature. Thus the final value for bias voltage must be chosen that is not so close to the non-linear range as it will saturate and effect the data.
+
+After examining the data, it was determined that with a bias voltage any higher than 500mV, there is a risk of non-linearity due to bias voltage having a large effect on the data. Thus a bias voltage of 431mV was chosen, one of the values originally given by the manufacturer. The gains in responsivity past this point were not were the chance of saturation, and as it was in the middle of the manufacturer's calibration range it seemed to be a good choice. Similarly, the offset current was chosen to be 6mA, in the middle of the manufacturer's calibration range. As the offset current had little effect on responsivity, this was set more to choose a middle baseline for the current range. These two settings were used for all pre-flight calibration measurements as well as the flight itself.
+
+Further examination into the responsivity was planned after the instrument was in full flight configuration as well as after the flight, to research more closely the responsivity of the detector for each pixel and to examine the effect of non-linearity further. It would also help to inform the design for future versions of the instrument. However, due to the damage the instrument and particularly the detector sustained upon landing, this will not be possible. It is an important aspect of the instrument to examine if a second version of the instrument is planned or if the detector is fixed.
 
 \subsection{Non-linearity}
-The non-linearity of the LIFE system must be determined to allow for its correction and removal from the data. The non-linearity will have an effect on Equation \ref{ADC_output_proportional}, as based on the structure of this equation the results should be linear. This non-linearity leads to out-of-band detector response, where spectral radiance can be seen outside of the known wavelength detecting band of the detector. This is a well-known issue with MCT detectors, and there are different methods for characterizing this. One such method is examining a cold blackbody system and examining the resulting signal. If the blackbody system is measured with the detector at very cold temperatures, there should be no signal, and any signal that is measured is due to non-linearity and can be detected and characterized~\citep{non-linearity_correction}. A cold blackbody system from ABB was procured for LIFE partly for this purpose.
+The non-linearity of the LIFE system must be determined to allow for its correction and removal from the data. The non-linearity will have an effect on Equation \ref{ADC_output_proportional}, as based on the structure of this equation the results should be linear. There are a number of ways to determine the non-linearity of the system, which must be utilized to allow for its removal.
 
-\section{Detector Noise}
-To further characterize the MCT Detector, and to help diagnose the issue with the MCT Detector damage sustained from the flight landing, the MCT noise as a result of the temperature is examined. As described in Chapter \ref{bkgnd}, temperature plays an important role in the noise in the data in MCT detectors. The noise and temperature will be examined for various stages of the flight. These stages are as follows: The launchpad cooldown, the ascent, the first hour after the balloon reaches float altitude, and a dataset following a system reboot during the latter stages of the flight. The noise is calculated by taking the standard deviation of the raw interferogram data, but with the interferogram peak removed. With the interferogram peak, the data becomes skewed upwards, especially as the detector cools and the peak has more of an effect.
+An effect of non-linearity on measurements is an out-of-band spectral response. Here, signal can be seen in the resulting spectra outside of the cutoff wavelengths, where the measurement should be zero. There are different methods for characterizing this response, one of which is to examine a very cold blackbody. Theoretically, with a cold enough blackbody, there should be effectively zero signal measured by the detector. This was accomplished by examining a blackbody surface with a temperature dropped via Liquid Nitrogen to -100°C. This test needed to be done in a thermal vacuum chamber, so that frost would not build up on the blackbody surface; this would have changed the emissivity of the surface. Even though it was done in a vacuum environment frost was still an issue, but measurements were taken. The signal that was measured from the cold blackbody is the non-linearity, or the out-of-band response~\citep{non-linearity_correction}. This could be then be removed from the data. Further work on this non-linearity problem is being done by Ethan Runge for his PhD thesis.
 
-The first set of data was taken while the instrument was sitting on the tarmac during CSA flight preparations. The data for this range is shown in Figure \ref{fig:tarmac_noise}, and takes place over 1 hour and 10 minutes. For this dataset LIFE is only taking images of the hot blackbody, the default imaging mode to ensure everything is working properly. As expected, the noise drops relatively linearly with the noise. However, unexpectedly, the noise begins to rise again past this point. It is unclear why this happens, but this matches the flight reboot cooldown as well as all other cooldown sequences. Also unknown is the large spike at roughly -175°C. There was some final flight preparation work being done on the instrument around this time, but none should have caused this effect. Further analysis will be done here to determine the exact time of the outlying data points and see if it matches precisely with any of the logged flight preparation events. Another strange aspect of this plot is that the data is grouped. This is likely not due to the lowest measurement accuracy, as that is roughly 0.1-0.01°C, and can be seen in all temperature plots. As this is not seen in any time plots shown later, it must be related to how the temperature data is measuring and saving data.
+\section{Detector Noise}\label{detector_noise_flight}
+To further characterize the MCT Detector, and to help diagnose the issue with the MCT Detector damage sustained from the flight landing, the MCT noise as a result of the temperature is examined. As described in Section \ref{IR_detector_types}, temperature plays an important role in the noise in the data in MCT detectors. The noise and temperature are examined for various stages of the flight. These stages are as follows: The launchpad cooldown, the ascent, the first hour after the balloon reaches float altitude, and a dataset following a system reboot during the latter stages of the flight. The noise is calculated by taking the standard deviation of the raw interferogram data, with the interferogram peak removed.
 
-\begin{figure}[ht]
-  \includegraphics[width=\linewidth]{mct_noise_temp_plots/tarmac_noisevstemp_invertedx.png}
+The first set of data was taken while the instrument was sitting on the tarmac during CSA flight preparations. The data for this range is shown in Figure \ref{fig:tarmac_noise}, and takes place over 1 hour and 10 minutes. For this dataset LIFE is only taking images of the hot blackbody, the default imaging mode to ensure everything is working properly. As expected, the noise drops relatively linearly with the noise. However, unexpectedly, the noise begins to rise again past this point. It is unclear why this happens, but this matches the flight reboot cooldown as well as all other cooldown sequences. Also unknown is the large spike at roughly -175°C. There was some final flight preparation work being done on the instrument around this time, but none should have caused this effect. Another strange aspect of this plot is that the data is grouped. This is likely not due to the lowest measurement accuracy, as that is roughly 0.1-0.01°C, and can be seen in all temperature plots. As this is not seen in any time plots shown later, it must be related to how the computer and the temperature sensor are measuring and saving data.
+
+\begin{figure}[h]
+\centering
+  \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/tarmac_noisevstemp_invertedx.png}
   \caption{Detector noise while sitting on launchpad.}
   \label{fig:tarmac_noise}
 \end{figure}
 
 Figure \ref{fig:tarmac_noise} shows that the detector does not fully decrease to -198°C, the final temperature. The temperature drop continues in the second part of the pre-launch data, or the \textit{flight preparation} dataset. During this time, the main balloon was being filled and there were no people on the gondola. The only task completed during this time was removing the aperture cover, which was removed in the middle of this set of data. The length of this dataset is 1 hour and 15 minutes and is shown in Figure \ref{fig:flightprep_noise}. The reason that the data is split between the \textit{tarmac} dataset and the \textit{flight preparation} dataset is that LIFE is now looking at the limb, the hot blackbody and the warm blackbody, and the data can be examined for each of these views. Again, it can be seen clearly in this plot that the data is grouped into four distinct sets of temperatures, and it is unclear why. Once it has reached -198°C it maintains this temperature well. There is a spike near the end of the dataset, as there is with the tarmac dataset. If we examine a time series of the data, shown in Figure \ref{fig:flightpreptime_noise}, we see that these noise spikes occur randomly after about halfway through the dataset. This is most likely a result of removing the aperture cover, especially as this is only seen in the limb data. With the aperture cover off, the limb measurements will measure anything walking past and will greatly vary. This could be people walking past the aperture into the field of view, or perhaps the fumes of a vehicle nearby. Importantly, the warm and hot blackbody data cools as expected. For clarity, data is shown without the limb versus time and temperature in Figure \ref{fig:flightpreptime_nolimb_noise} and Figure \ref{fig:flightprep_nolimb_noise}, respectively. Here we can see that the noise of the hot and warm blackbodies is decreasing to reasonable levels.
 
-\begin{figure}[ht]
+\begin{figure}
   \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/flight_prep_noisevstemp_invertedx_colours.png}
   \caption{Detector noise while waiting for launch}
   \label{fig:flightprep_noise}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/flight_prep_noisevstime_colours.png}
   \caption{Detector noise with time while waiting for launch}
   \label{fig:flightpreptime_noise}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/flight_prep_noisevstime_colours_no_limb.png}
   \caption{Detector noise with time while waiting for launch, without limb data.}
   \label{fig:flightpreptime_nolimb_noise}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/flight_prep_noisevstemp_invertedx_colours_no_limb.png}
   \caption{Detector noise with time while waiting for launch, without limb data.}
   \label{fig:flightprep_nolimb_noise}
 \end{figure}
 
-The next set of data, shown in \ref{fig:ascent_pt1_noise}, is the first stage of the ascent, up to roughly 15km. 
-
-\begin{figure}[ht]
+\begin{figure}
 \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/goingup_noisevtemp_invertedx_colours.png}
   \caption{Detector noise during the first 15km of ascent}
   \label{fig:ascent_pt1_noise}
 \end{figure}
 
-The data here is extremely noisy, even noisier than the peak of the tarmac data. However, the noise only comes from the limb data, and is otherwise at a reasonable noise level for both the hot and warm blackbodies. The noise is like due to the rapidly changing atmosphere, with various pressures and temperatures, that influences the detector noise and the interferograms. When examining the noise during float and during the final part of the ascent when the atmospheric temperature is relatively constant, there is very little noise in the data. This can be found in Figure \ref{fig:ascent_pt3_noise}. One other thing to point out with this plot is the way the data is grouped. This is due to the accuracy of the sensor; it is split in 0.01°C increments. Effectively, this is all at the same temperature.
+The next set of data, shown in \ref{fig:ascent_pt1_noise}, is the first stage of the ascent, up to roughly 15km. The data here is extremely noisy, even noisier than the peak of the tarmac data. However, the noise only comes from the limb, and is otherwise at a reasonable noise level for both the hot and warm blackbodies. The noise is due to the rapidly changing atmosphere, with various pressures and temperatures, that influences the detector noise and the interferograms. When examining the noise during float when the atmospheric temperature is relatively constant, there is very little noise in the data. One other thing to point out with this plot is the way the data is grouped. Unlike previously, where the temperatures were grouped more broadly, this is due to the accuracy of the sensor; it is split in 0.01°C increments. Effectively, this is all at the same temperature. It is also helpful to examine the data throughout the entire ascent as a function of time to see the decrease in the noise of the detector as the balloon rises, especially once the instrument has reached an altitude where the atmosphere is more uniform in terms of temperature. This plot is shown in Figure \ref{fig:ascent_noisetime}.
 
-\begin{figure}[ht]
-\centering
-  \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/goingup_pt3_noisevtemp_invertedx_colour.png}
-  \caption{Detector noise during the final 10km of ascent}
-  \label{fig:ascent_pt3_noise}
-\end{figure}
-
-In Figure \ref{fig:ascent_pt3_noise}, the noise has decreased from the first stage of the ascent, as expected. Also, as with Figure \ref{fig:ascent_pt1_noise}, the data is not continuous in the temperature range, due to the accuracy of the sensor. One thing that can be seen in this plot however that is not seen in previous plots is that the hot blackbody is slightly noisier than the limb or the warm blackbody. This is seen in all plots with a low limb noise, and will be discussed more later.
-
-It is also helpful to examine the data throughout the ascent as a function of time to see the decrease in the noise of the detector, especially once the instrument has reached an altitude where the atmosphere is more uniform, in terms of temperature. This plot is shown in Figure \ref{fig:ascent_noisetime}.
-
-\begin{figure}[ht]
+\begin{figure}
 \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/goingup_allparts_noisevtime_colour.png}
   \caption{Detector noise for the whole ascent}
   \label{fig:ascent_noisetime}
 \end{figure}
 
-Once the desired altitude of 36 km was reached, the data was split into different sets through the rest of the flight. Examined next is the data for the first stage of the balloon float measurements. The plot of the detector noise against temperature is shown in Figure \ref{fig:float_noise}.
-
-\begin{figure}[ht]
+\begin{figure}
 \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/FloatLook1_noisevtemp_invertedx_colours.png}
   \caption{Detector noise during the first 1.5 hours at float altitude}
   \label{fig:float_noise}
 \end{figure}
 
-There are many similaries to Figure \ref{fig:ascent_pt3_noise} seen in Figure \ref{fig:float_noise}. Again there is a clear systematic increase in noise when measuring the hot blackbody as compared to the limb and warm blackbodies. It is unclear why this would occur, as the temperature of this blackbody throughout flight was as steady as the warm blackbody. If temperature variations were to cause error, it would be expected that the limb would be the noisiest as it is examining a non-uniform atmosphere. More tests need to be completed in the lab to examine this behaviour further, with different set temperatures for the hot blackbodies.
+Once the desired altitude of 36 km was reached, the data was split into different sets through the rest of the flight. Examined next is the data for the first stage of the balloon float measurements. The plot of the detector noise against temperature is shown in Figure \ref{fig:float_noise}. Here, there is a clear systematic increase in noise when measuring the hot blackbody as compared to the limb and warm blackbodies. It is unclear why this would occur, as the temperature of this blackbody throughout flight was as steady as the warm blackbody. If temperature variations were to cause error, it would be expected that the limb would be the noisiest as it is examining a non-uniform atmosphere. More tests need to be completed in the lab to examine this behaviour further, with different set temperatures for the hot blackbodies.
 
-Finally, it is helpful to examine once more the noise decrease with the decrease in detector temprature. The instrument was shutdown for a few minutes during flight, as it was expected that CNES was going to end the flight and bring down the balloon. However they changed their plan and continued the flight, so LIFE was rebooted. As the detector had warmed up during this time, the data can be examined while it cooled back down to its ideal temperature. This data is shown in Figure \ref{fig:secondboot_noise}.
+Finally, it is helpful to examine once more the noise decrease with the decrease in detector temperature. The instrument was shutdown for a few minutes during flight, as it was expected that CNES was going to end the flight and bring down the balloon. However the plan changed and the flight continued, so LIFE was rebooted. As the detector had warmed up during this time, the data can be examined while it cooled back down to its ideal temperature. This data is shown in Figure \ref{fig:secondboot_noise}.
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/SecondBoot_noisevtemp_invertedx_colours.png}
   \caption{Detector noise during the reboot phase of the flight.}
   \label{fig:secondboot_noise}
 \end{figure}
 
-A behaviour shown in Figure \ref{fig:secondboot_noise} that was also clear in Figure \ref{fig:tarmac_noise} while cooling on the tarmac was the increase in noise in the range of -185°C and -195°C. It is unknown why this behaviour occurs, but it is present in all cases of detector cooldown. In this range however the noise is relatively low, so the detector could still be used to take reasonable measurements after roughly -185°C. Ideally the detector reaches its ideal temperature of 198°C. This noise increase in behaviour can also be seen in the time variant of this plot, shown in Figure \ref{fig:secondboot_noisetime}.
+A behaviour shown in Figure \ref{fig:secondboot_noise} that was also clear in Figure \ref{fig:tarmac_noise} while cooling on the tarmac was the increase in noise in the range of -185°C and -195°C. It is unknown why this behaviour occurs, but it is present in all cases of detector cooldown. In this range however the noise is relatively low, so the detector could still be used to take reasonable measurements after roughly -185°C. This noise increase in behaviour can also be seen in the time variant of this plot, shown in Figure \ref{fig:secondboot_noisetime}. This figure shows more clearly the temperature drop as it begins cooldown, followed by a short increase in noise before falling to the ideal temperature and keeping this value steady for the rest of the dataset.
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
   \includegraphics[width=0.8\linewidth]{mct_noise_temp_plots/SecondBoot_full_noisevtime_colours.png}
   \caption{Detector noise for the whole ascent}
   \label{fig:secondboot_noisetime}
 \end{figure}
 
-This figure shows more clearly the temperature drop as it begins cooldown, followed by a short increase in noise before falling to the ideal temperature and keeping this value steady for the rest of the dataset.
-
-Further data must be taken with the potentially damaged MCT, to examine the noise with respect to the temperature. This will show if the noise is higher than it usually is, showing that there is a potentially damaged connection between the Stirling cooler and the cold stop. Other things to consider:
+After the flight, the MCT detector was removed from the LIFE instrument and sent to the manufacturer to examine. They determined that the cold stop of the detector, that maintains -198°C to avoid saturation, had broken off and was no longer being cooled; hence the noise of post-flight measurements. It is costly to repair, and discussions are ongoing to determine if this is viable. However, examining the detector noise throughout stages of flight still creates questions that need to be considered for future instruments:
 \begin{itemize}
     \item Why is there a rise in noise before the detector fully cools?
     \item Why is the noise of the hot blackbody higher than the warm or the limb?
     \item Why is the data in bunches? Could be related to how the temperature is saved (in bits)?
-    \item -	Why is there a spike in the tarmac data when it was only looking at the hot blackbody?
+    \item Why is there a spike in the tarmac data when it was only looking at the hot blackbody?
 \end{itemize}
+Finding solutions to these questions, and performing further tests into these questions with a repaired detector, would allow future versions of the instrument to operate better and more efficiently.
 
-\section{Flight Performance}
+\section{Flight Performance}\label{detector_flight_performance}
 Talk about how the detector performed during the flight. This will be things such as non-linearity in the flight data, and that the data was not saturated.
