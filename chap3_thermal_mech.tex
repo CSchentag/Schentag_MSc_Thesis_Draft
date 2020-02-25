@@ -313,15 +313,21 @@ The blackbody assembly, unlike the rest of the design, was not designed in-house
 
 The blackbody assembly has six blackbody surfaces that can be imaged, split into two halves. The original purpose of the instrument required two identical systems, so there are two viewports, three pairs of blackbodies, and two viewports towards the atmosphere. LIFE only requires one system, so the other was used only for lab verification testing. Focusing now on one part of the system, there are three surfaces that can be imaged. One is connected to a thermoelectric cooler, and is thus used as the cold blackbody. The minimum temperature of this cooler is unknown, but is rated to go well below zero degrees. However, in a lab environment, a surface temperature dropping below zero would lead to frost buildup on the surface, causing changes in the emissivity. With changes in the emissivity, the temperatures would no longer be measured properly, and in addition the frost buildup could cause dust and other materials to build up on the surface, rendering it less accurate. Thus the lowest temperature this blackbody was set at was 5°C, however it was set to 10°C for the majority of our testing. Another external blackbody, from the ACE instrument, was procured from ABB for the purposes of looking at a temperature well below freezing, in a TVAC environment. This is described in greater detail in Section \ref{non-linearity_sec}. 
 
-The other two surfaces can theoretically be used interchangeably as the hot and warm blackbody surfaces, however it was discovered that the power of the heater inside the one surface is much larger than the other, so to ensure enough power to reliably keep the temperatures steady, the former was chosen as the hot blackbody surface. During tests, the blackbody surfaces were interchanged, and in a cold environment there is not enough power to keep the temperature steady of the hot blackbody with the lower power heater. Again, no maximum temperature was given for these surfaces, but were used in their original configuration as high as 225°C. In the LIFE configuration, most often the hot blackbody was set at 60°C and the warm blackbody was set at 30°C. An schematic of the blackbody system is shown in Figure \ref{fig:bb_schematic}, and an image of the  system is shown in Figure X.
+The other two surfaces can theoretically be used interchangeably as the hot and warm blackbody surfaces, however it was discovered that the power of the heater inside the one surface is much larger than the other, so to ensure enough power to reliably keep the temperatures steady, the former was chosen as the hot blackbody surface. During tests, the blackbody surfaces were interchanged, and in a cold environment there is not enough power to keep the temperature steady of the hot blackbody with the lower power heater. Again, no maximum temperature was given for these surfaces, but were used in their original configuration as high as 225°C. In the LIFE configuration, most often the hot blackbody was set at 60°C and the warm blackbody was set at 30°C. An schematic of the blackbody system is shown in Figure \ref{fig:bb_schematic}, and an image of the  system is shown in Figure \ref{fig:CAD_Blackbodies}.
 
 \begin{figure}
     \centering
     \includegraphics{chap3_images/Blackbody_schematic.png}
-    \caption{Schematic of the LIFE Blackbody System.}
+    \caption{Schematic of the LIFE blackbody system.}
     \label{fig:bb_schematic}
 \end{figure}
-% ADD BLACKBODY SYSTEM FIGURE
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{chap3_images/Blackbody_CAD_labelled.JPG}
+    \caption{CAD model of LIFE blackbody system.}
+    \label{fig:CAD_Blackbodies}
+\end{figure}
 
 The temperatures in the schematic show the temperatures from the original configuration, not the LIFE configuration. Also, for the final flight configuration of LIFE, it is noted that the bottom warm blackbody and the bottom hot blackbody are removed, as they are only used for lab verification and it is unnecessary weight. Plates were built and installed to cover the openings into the system left by removing these two blackbodies.
 
@@ -329,95 +335,661 @@ The blackbody system operates using a rotating mirror at the centre of each syst
 
 The accuracy of the stepper motor also needed to be verified for proper data analysis after flight. To allow retrievals of the data, a very precise knowledge of the viewing angle of the instrument was needed, to within 0.1°. As there was no encoder for the stepper motor, it was impossible to tell through data feedback where the motor exactly was; numerous measurements needed to be taken to see the variation in angle each time the mirror realigned itself to image a blackbody or the atmosphere. This also led to the discovery of a few systematic errors, such as the motor would overshoot its required stopping position by a certain number of steps. Through testing and development of the motor, this systematic error was corrected, and the error in angle was deemed to be within the 0.1° required.
 
-The largest issue with the blackbody system that required characterization correction were the surface temperatures. Although the surface temperatures of the blackbodies were not important to the detector characterization, as long as it was well known and replicated in all images, the temperature drift over time of the surface was. The LIFE FTS system requires 2.3 seconds to take a full image; if the temperature of the imaged surface changes significantly during this time, there are significant errors in the spectral data and the results are meaningless. The blackbody temperatures must be kept as steady as possible during the image capture time, ideally less than 0.1°C. Temperatures of the blackbodies were controlled via Team Wavelength proportional–integral–derivative (PID) temperature controllers, which were able to withstand a vacuum environment with small modifications, and had been used by previous atmospheric research instruments developed by ISAS. It was discovered that when using these controllers with defined setpoints, the temperature would oscillate around the setpoint indefinitely. PID controllers reach their setpoints by oscillating around a setpoint making small corrections, with the oscillations becoming smaller and smaller until the steady setpoint was reached. In the LIFE design the setpoints would never be reached, and a different size of oscillation occurred for each blackbody: The hot blackbody oscillated by roughly 4°C every ten minutes, while the cold blackbody could oscillate by as much as 25°C in the same time frame. A temperature reading acquired by the warm blackbody temperature controller is shown in Figure X.
+The largest issue with the blackbody system that required characterization correction were the surface temperatures. Although the surface temperatures of the blackbodies were not important to the detector characterization, as long as it was well known and replicated in all images, the temperature drift over time of the surface was. The LIFE FTS system requires 2.3 seconds to take a full image; if the temperature of the imaged surface changes significantly during this time, there are significant errors in the spectral data and the results are meaningless. The blackbody temperatures must be kept as steady as possible during the image capture time, ideally less than 0.1°C. Temperatures of the blackbodies were controlled via Team Wavelength proportional–integral–derivative (PID) temperature controllers, which were able to withstand a vacuum environment with small modifications, and had been used by previous atmospheric research instruments developed by ISAS. It was discovered that when using these controllers with defined setpoints, the temperature would oscillate around the setpoint indefinitely. PID controllers reach their setpoints by oscillating around a setpoint making small corrections, with the oscillations becoming smaller and smaller until the steady setpoint was reached. In the LIFE design the setpoints would never be reached, and a different size of oscillation occurred for each blackbody: The hot blackbody oscillated by roughly 4°C every ten minutes, while the cold blackbody could oscillate by as much as 25°C in the same time frame. A temperature reading acquired by the hot blackbody temperature controller is shown in Figure \ref{fig:C2H_temp_oscillation}.
 
-% ADD EXCEL PLOT OF OSCILLATING BLACKBODY TEMPERATURE
+\begin{figure}
+    \centering
+    \includegraphics{chap3_images/C2H_temperature_oscillation_excel.png}
+    \caption{Oscillation of hot blackbody temperature over 5 hours.}
+    \label{fig:C2H_temp_oscillation}
+\end{figure}
 
 Often, in a PID system, the oscillation and setpoint overshoot can be minimized by selecting optimized P, I, and D values. In this temperature controller, the only value that allowed direct control through a dial was the proportional gain, P. However, tests with various values of proportional gain found it to have very little effect on the oscillation error. Eventually it was found through examining documentation and contacting the manufacturer that the integration constant can be changed by changing the capacitance in a part of the circuit, which involved changing a capacitor. The manufacturer could not provide any guess on what a better capacitance would be, only that it should be lower. Starting with a capacitance of 0.05{\textmu}F, different capacitors were tested with decreasing capacitance. With each decrease in capacitance, the oscillation decreased, but it was not until a 1nF capacitor was used that the error in temperature oscillation was within the required 0.1°C, for both the warm and hot blackbodies. However, even at this capacitance, the cold blackbody temperature continued to oscillate by as much as 2°C. This probablem was eventually solved by using a different temperature controller; this option was not easily available for the other two surfaces as they had to be used during flight and needed to be remotely controlled and to survive a vacuum environment. The cold blackbody was only to be used for verification in the lab, so the controller did not have the same requirements. An external controller was sourced, in which the PID values could be easily configured. Through further testing, the values were optimized such that the oscillation of the cold blackbody surface was 0.1°C. With the temperature drift requirements met for all three blackbodies, the blackbody system was fully ready to be used for LIFE.
 
-\subsection{LIFE Preliminary Design: Version 1} % This needs to be written better, but I have no idea how
-Prior to the beginning of my thesis, Ethan Runge had planned to develop the thermal-mechanical design himself as part of his MSc. Eventually, it was decided that due to the required amount of work for the design, it should be a separate thesis. However, prior to this decision and prior to my work, a first preliminary version was developed. A large part of Ethan's MSc. thesis was the development of the LIFE optical system, and a CAD model of this system had already been developed in SolidWorks partly through some of Ethan's work and partly from models sent by ABB. This was placed into two early versions for the optics and electronics boxes, both known as Version 1. Though these models would be eventually redesigned from the ground up as part of this thesis, besides the core optical system, it is helpful to examine this initial design as it would inform the basic concept of future designs. A model of LIFE Version 1 is shown in Figure \ref{fig:LIFE_V1}.
+\subsection{LIFE Preliminary Design: Version 1} % Need to remove first person references but I have no idea how
+Prior to the beginning of my thesis, Ethan Runge had planned to develop the thermal-mechanical design himself as part of his MSc. Eventually, it was decided that due to the required amount of work for the design, it should be a separate thesis. However, prior to this decision and prior to my work, a first preliminary version was developed. A large part of Ethan's MSc. thesis was the development of the LIFE optical system, and a CAD model of this system had already been developed in SolidWorks partly through some of Ethan's work and partly from models sent by ABB. This was placed into two early versions for the optics and electronics boxes, both known as Version 1. Though these models would be eventually redesigned from the ground up (besides the core optical system) as part of this thesis, it is helpful to examine this initial design as it would inform the basic concept of future designs. A model of LIFE Version 1 is shown in Figure \ref{fig:LIFE_V1}.
 
-\begin{figure}[h] % Should be updated to the correct LIFE V1
+\begin{figure}[h]
     \centering
-    \includegraphics{chap3_images/LIFE_V1.png}
-    \caption{LIFE Version 1, developed by Ethan Runge.}
+    \includegraphics[width=0.8\linewidth]{chap3_images/LIFE_V1_images/LIFE_V1_labelled.JPG}
+    \caption{LIFE Version 1.}
     \label{fig:LIFE_V1}
 \end{figure}
 
-The layout of this design is the basis of the layout of all subsequent designs - a baseplate with the blackbody at the front, an box containing the core optical system that looks into the blackbody system, next to an electronics box that contains the optics electronics. However, this is the only aspect of the design that does not change through the subsequent iterations and updates. This footprint is heavily based on the requirement that the MCT Detector be tilted 90° relative to the horizontal, which is described in the next section.
+The layout of this design is the basis of the layout of all subsequent designs: a baseplate with the blackbody at the front, a box containing the core optical system, and an electronics box that contains the optics electronics. However, this is the only aspect of the design that does not change through the subsequent iterations and updates. This footprint is heavily based on the requirement that the MCT Detector be tilted 90° relative to the horizontal, which is described in the next section.
 
 \subsubsection{Optics Box Design: Version 1}
-The driving requirement behind a optics box design where the optical system is mounted perpendicular to the baseplate against the box wall is due to the orientation of the MCT Detector. To vertically image the atmosphere, as is one of the goals of LIFE, the pixel array needed to be vertical. However, the detector that is supplied with the ABB system has a horizontal 1x16 pixel array. As a result, it needed to be mounted on its side, such that the horizontal array would be turned vertical, so the atmosphere could be vertically resolved. This was a break from all previous instruments that the ISAS atmospheric research group had designed, and required a vertical optics box. This also had further complications - it needed to be mounted to the wall, yet all parts needed to be free to move if necessary for alignment, and still be able to be sturdy to avoid any shaking causing miss alignments following the flight ascent. Version 1 of the optics box, designed to meet the requirement of tilting the detector and indeed the entire optical system, is shown in Figure X.
+The driving requirement behind an optics box design where the optical system is mounted perpendicular to the baseplate is due to the orientation of the MCT Detector pixels. To vertically profile the atmosphere, one of the goals of LIFE, the pixel array needed to be vertical. However, the detector that is supplied with the ABB system has a horizontal 1x16 pixel array. As a result, it needed to be mounted on its side, such that the horizontal array would be turned vertical, and atmosphere could be vertically resolved. Mounting the optical system perpendicular to the baseplate was a break from all previous instruments that the ISAS atmospheric research group had designed, and led to increased complexity in the overall design. This complexity would lead to issues such as needing to be mounted to the wall, yet have all parts be free to move if necessary for alignment, and still be able to be sturdy to avoid any shaking causing misalignments due to the flight ascent. Version 1 of the optics box, designed to meet the requirement of tilting the detector and indeed the entire optical system, is shown in Figure \ref{fig:OB_V1}.
 
-% ADD OPTICS BOX V1 IMAGE HERE (REALLY V0 - YOU KNOW WHAT I MEAN) - CAN ALSO TALK ABOUT DIFFERENT COMPONENTS OF THE OPTICS BOX HERE - SHOULD BE LABELLED.
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V1_images/Optics_Box_V1_V0_front_view_labelled.JPG}
+        \caption{Front view of Optics Box V1.}
+        \label{fig:OB_V1_front}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.42\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V1_images/Optics_Box_V1_V0_rear_view_labelled.JPG}
+        \caption{Rear view of Optics Box V1.}
+        \label{fig:OB_V1_rear}
+    \end{subfigure}
+    \caption{Original design of the Optics Box.}
+    \label{fig:OB_V1}
+\end{figure}
 
-The initial design used a construction material known as \textit{T-Frame}. It is an inexpensive, off the shelf component made from aluminum that is designed to easily fit together with other pieces of T-Frame and fasteners and connectors, all easily available and easy to build. Being able to order this material and build it in-house would save a large amount of the instrument budget. It also still allowed freedom in the design, as all components could be easily cut to length. Using a CAD model of this material taken from a suppliers website, a model for the box could be quickly designed. However, downsides to this material was that although easy to build, it was not entirely secure. As a result of manufacturing tolerances, each piece of the box could be loose connected to other pieces. Connecting things to this frame would also be a challenge, as there was no easy way to mount any parts, such as the FTS, to the wall, without having either an interface plate or to install it prior to putting the box together, which would lead to a large amount of time necessary for repairs.
+The initial design used a construction material known as \textit{t-frame}. It is an inexpensive, off-the-shelf component made from aluminum that is designed to easily fit together and also comes with fasteners and connectors, all easily available and easy to build. Being able to order this material and build in-house would save a large amount of the instrument budget. It also still allowed freedom in the design, as all components could be easily cut to length. Using a CAD model of this material taken from a suppliers website, a model for the box could be quickly designed. However, downsides to this material was that although easy to build, it was not entirely secure. As a result of manufacturing tolerances, each piece of the box could be loosely connected to other pieces. Connecting things to this frame would also be a challenge, as there was no easy way to mount any parts, such as the FTS, to the wall, without having either an interface plate or to install it prior to putting the box together, which meant a significant amount of time would be necessary for repairs.
 
-Initially, as described in Section \ref{electronics_reqs}, vibration needed to be dampened as much as possible, due to the initial worry of vibrations from the Stirling cooler causing vibrations in the FTS, which may cause errors in the data. An idea to solve this was to use a spring system between the detector and the wall of the box, which would dampen the vibrations enough that they would not travel to the FTS system. The box was further stiffened through the use of rods connecting the two walls of the box. 
+Initially, as described in Section \ref{electronics_reqs}, vibration needed to be dampened as much as possible. Vibrations from the Stirling cooler could potentially cause vibrations in the FTS, which may cause errors in the data. The solution to this was to use a spring system between the detector and the wall of the box, which would dampen the vibrations enough that they would not travel to the FTS system. These springs cannot be seen in \ref{fig:OB_V1} but are between the detector mounting plate and the detector. The box was further stiffened through the use of rods connecting the two walls of the box, to try to avoid vibrations propagating freely through the t-frame structure, either from the detector or from the gondola.
 
-When I began my thesis, and took over the mechanical design, one of the first things that was determined was that the vibrations were not going to be as much of an issue as originally thought. As a result, the spring system and cross-braces were removed, as stiffness was not considered to be as much of an issue either. A Version 1.1 was developed, which was a simplified version of the original design with the optics attached to the walls and other unnecessary stiffening and dampening components removed. As thermal analysis was going to be one of the driving aspects of the design, the first thermal analysis of the model was done to this version of the optics box, by adding a heater to the T-Frame wall and measuring its effect. The results of that thermal model are in Figure X.
+When I began my thesis, and took over the mechanical design, one of the first design decisions made was that the vibrations were not going to be as much of an issue as originally thought. As a result, the spring system and cross-braces were removed. A Version 1.1 was developed, which was a simplified version of the original design with the optics attached to the walls through an interface plate, and other unnecessary stiffening and dampening components removed. An updated model of this design is shown in Figure \ref{fig:OB_V1.1}.
 
-% ADD THERMAL MODEL OF OPTICS BOX V1.1
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{chap3_images/LIFE_V1_images/Optics_Box_V0_5_front_view.JPG}
+    \caption{Version 1.1 of the Optics Box, with dampening and cross-bracing components removed.}
+    \label{fig:OB_V1.1}
+\end{figure}
 
-% TALK ABOUT THE RESULTS OF THIS ANALYSIS.
-
-One of the main criticisms of this design is that it is open; the optics must be kept as clean as possible, and need to be well protected when not in a clean room. In addition, thermal control of the optics would be easier if the entire environment inside the box could be kept steady, rather than just a heater nearby in an open environment. Therefore, the main requirement of the next version of the optics box would be to design an enclosure for the optics, in a way that would enclose the optics and FTS while not directly attaching to anything and being easy to install around the optics. 
+One of the main issues of this design is that it is open; the optics must be kept as clean as possible, and need to be well protected when not in a clean room. In addition, thermal control of the optics would be easier if the entire temperature environment inside the box could be kept steady, rather than just a heater nearby in an open environment. Therefore, the main requirement of the next version of the optics box would be to design an enclosure for the optics, in a way that would enclose the optics and FTS while not directly attaching to anything to avoid vibrations and to be easier to install around the optics. 
 
 \subsubsection{Electronics Box Design: Version 1}
-The design of the electronics box changes throughout the design process largely in part to two reasons: The thermal requirements, and adding more parts. As the mechanical design progressed, so did the electrical design, done by lab engineer Paul Loewen. This required room for more parts, and the box grew, and parts shifted around. However, for the first design, the only electronics that were of concern were the components necessary for the operation of the optical system: The FTS control board, known as the BMXS board, the two data acquisition boards, with the Pleora Ethernet interface boards attached, an Ethernet hub to allow the data acquisition boards, the BMXS board and the external computer to all communicate, and a power supply for the system. An image of Version 1 of the Electronics Box is shown in Figure X.
+The design of the electronics box changes throughout the design process largely due to two reasons: The thermal requirements, and adding more parts. As the mechanical design progressed, so did the electrical design, done by lab engineer Paul Loewen. This required room for more parts, and the box grew, and parts shifted around. However, for the first design, the only electronics that were of concern were the components necessary for the operation of the optical system: The FTS control board, known as the BMXS board, the two data acquisition boards, with the Pleora Ethernet interface boards attached, an Ethernet hub to allow the data acquisition boards, BMXS board and the external computer to all communicate, and a power supply for the system. An image of Version 1 of the Electronics Box is shown in Figure \ref{fig:Ebox_V1}. Similar to Version 1 of the Optics Box, the original version of the Electronics Box used T-Frame as its basic structure. Aluminum panels on all sides, including on the back to which the electronics are bolted, are transparent so the T-Frame and inner electronics can be seen. This is a simple design, but like the Optics Box T-Frame design, would be easy and inexpensive to build.
 
-% ADD EBOX V1 FIGURE HERE
-% MAY WANT TO TALK ABOUT T-FRAME HERE TOO, I CAN'T REMEMBER IF THIS VERSION HAD T-FRAME OR NOT (PROBABLY).
-Although later in the process the design of the electronics box would be driven by the thermal analysis, the initial design was driven by the cables length connecting the detector and the data acquisition boards. Sixteen cables, one for each detector pixel, sent signals from the detector to these boards, to be amplified, digitized and sent to the computer. These cables were extremely delicate and could not be lengthened, due to the signals being unamplified coming from the detector, they would have to be fed directly from the optics box to the electronics box. Thus these boards were placed and oriented in the electronics box to minimize distance to the detector. The rest of the components were placed around arbitrarily in the rest of the box. Thermal analysis of this box would not be completed until the second version of this box when it had been converted to T-Frame and a few more components were added. With the use of thermal analysis, the components were placed differently according to their required temperature ranges.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{chap3_images/LIFE_V1_images/Ebox_V1_labelled.JPG}
+    \caption{CAD model of Version 1 of the Electronics Box.}
+    \label{fig:Ebox_V1}
+\end{figure}
+
+Although later in the process the design of the electronics box would be driven by the thermal analysis, the initial design was driven by the cable length connecting the detector and the data acquisition boards. Sixteen cables (one for each detector pixel) sent signals from the detector to these boards, to be amplified, digitized and sent to the computer. These cables were extremely delicate and could not be lengthened; due to the signals being unamplified coming from the detector, they would have to be fed directly from the optics box to the electronics box. Thus these boards were placed and oriented in the electronics box to minimize distance to the detector. The rest of the components were placed around arbitrarily in the rest of the box. The thermal analysis of this box is completed when the first computer stack was developed and added to the design, during the development of LIFE Version 2.
 
 \subsection{LIFE Preliminary Design: Version 2}
-First updated version of LIFE, that I worked on: Optics box is at V1. Ebox is the same (double check), so don't need to add an electronics box section.
+The second iteration of LIFE was largely based around a thorough update of the optics box. This was the first major design iteration that was developed as part of this thesis, and went further into the thermal design of the instrument than previously, and the changes are largely based on the results of thermal analyses. The electronics box remained largely the same for this iteration, with the exception of adding the computer stack to the design. However, the initial thermal simulations of the electronics box were done in this version as well, and would inform updates of the electronics box in future LIFE versions. A full model of LIFE Version 2 is shown in Figure \ref{fig:LIFE_V2}.
+
+\begin{figure} % This may not need to be here, could just skip the full version models
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V2_images/LIFE_V2.png}
+    \caption{LIFE Version 2}
+    \label{fig:LIFE_V2}
+\end{figure}
 
 \subsubsection{Optics Box Design: Version 2}
-Talk about first official update of optics box: Rearranged t-frame (made it shorter to cut out extra space, while still aligning with blackbodies) and added radiation plates.
+To allow the optics temperatures to be more easily controlled, and to protect the optics when outside the lab, a box was designed around the T-Frame. It consists of six panels that are bolted directly onto the T-Frame. In addition to this, the optics system was redesigned to be attached to a single optical breadboard, that would be cut to fit inside the box. This breadboard could be attached directly to the T-Frame, so the placement and alignment of all optical components could be done externally outside the box, the optical system could be tested externally, and all components would be on one plane inside the box making final alignment much easier. Having all components bolted to this breadboard also allows a more uniform temperature across all components. With the previous design, different components were mounted on different parts of the frame, meaning multiple heaters and temperature sensors, and controllers would be necessary. Constraining the optical system to one baseplate means easier temperature control. A further change to this design was to make it smaller and cut out unnecessary empty space inside. The height of the FTS is the constraint, as it must align with the entrance of the blackbody system, so there will be an empty area towards the bottom of the box; however the extra space on all sides of the optical system were made smaller. 
+
+This design would make the thermal properties of the instrument easier to control, much more than the previous design. However, there was still a potential to improve it further.  With the components enclosed in a box, external radiation, either from the environment (i.e. sun) or from nearby components (i.e. electronics box) could warm the box and cause the system to get too hot. An idea was taken from the CATS instrument design, which had similar requirements for temperature: External walls, known as radiation plates, can be placed as an outer layer over the inner box. To prevent any thermal path between the internal and external walls, titanium spacers are used as a connection between these plates, which have a very low thermal conductivity. Thus, in a vacuum environment, heat can only be transferred slowly through radiation from the exterior plates to the interior plates, and through slow conduction through the spacers. This allows the inner box to stay at a much steadier temperature, minimizing any external temperature variations that may occur. This design also added titanium spacers as an attachment between the Optics Box and the baseplate. The gondola temperature can swing as low as -50ºC, and this limits those large temperature oscillations and temperature drops inside the optics box. Much smaller heaters can then be used to keep the optics above the minimum temperature requirements. The finalized model for the optics box Version 2 is shown in Figure \ref{fig:OB_V2}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.84\textwidth]{chap3_images/LIFE_V2_images/Optics_Box_V1_labelled.JPG}
+    \caption{Version 2 of the Optics Box, which incorporates external radiation plates.}
+    \label{fig:OB_V2}
+\end{figure}
+
+This was the first part of the instrument to have used thermal analysis. As this design was created with thermal properties in mind, it was important to see the results of using these various design methods to help with the thermal analysis. There are four main heat loads for the thermal analysis of this box: The dissipated heat of each electrical component, the temperature of the base of the box (i.e. gondola temperature), the temperature of the side wall caused by the electronics box, and the power of the resistive heaters applied to the plate. The dissipated heat of each electrical component is known, and given by ABB: The FTS generates a negligible amount of heat (1W chosen for study) and the MCT generates 8W. The baseplate temperature was alternated between -30°C or -20°C. The side wall heat load was assuming a thermal connection between the electronics box and optics box, as a way to dump heat from the electronics box and warm the optics box. The final heat load, the heaters, is the unknown that is changed through the design to meet the temperature requirements. A total of 17 designs were simulated, each with a different amount of heaters, placement of heaters, and power dissipated from the heaters. For each simulation, temperatures were recorded at various parts of the design, such as the FTS, different parts of the breadboard, the lens system, and an average temperature of the breadboard, outer and inner walls. These were recorded in an excel spreadsheet describing the results of each simulation. Only a few of these iterations will be described here.% but could maybe put the rest into an appendix?
+
+It is noted that the majority of the initial simulations, until more finalized designs were created, were steady-state; the temperatures for all components had reached a final temperature. SolidWorks has the ability to perform transient analysis, and is utilized for the later designs, but to perform these simulations it much solve a simulation for each time step. As a result, the time to solve a transient analysis can be very long, and it was not realistic to perform this for rapid prototyping. Through some transient analyses, it is found that a high number of hours is required to actually reach steady state temperatures, longer than the flight. Still, the steady state temperatures are the maximum or minimum temperatures that will be reached, and can be treated as worst-case scenario results. If the temperatures from a steady-state simulation fit within the temperature requirements, it will certainly reach those requirements for the transient analysis and during a time frame such as the flight.
+
+The initial simulation involved no heaters, as a test to see how cold the optics would get with a -30°C baseplate. The majority of the heat comes from the electronics box, based on an idea that the electronics box and optics box could be thermally connected, as a way to use the waste heat from the electronics box and make the instrument more efficient. The result of this simulation is shown in Figure \ref{fig:OB_V2_TA_1}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V2_images/Thermal_Analysis_25_deg_-30_deg.JPG}
+    \caption{Initial temperature simulation of Optics Box V2, with no heaters and a direct connection to the Electronics Box.}
+    \label{fig:OB_V2_TA_1}
+\end{figure}
+
+A key takeaway from this simulation is that the titanium spacers are accomplishing their task of minimizing the cold travelling through the bottom of the box into the optical system. With a spacer of roughly 1cm in height, there is a temperature change of almost 20°C. The temperatures of the optical system are in a range of 12-15°C, on the low end of the required temperature range, and is dependent on heat coming from the electronics box. As a way to increase the temperature for the next test, the outer radiation plate between the optics and electronics boxes is removed. This allows a more direct heat path between the boxes with the removal of the titanium spacers, and will further warm the optics box. The results of this simulation is shown in Figure X\ref{fig:OB_V2_TA_2}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V2_images/TA_25_-30_no_front_left_outer_walls.JPG}
+    \caption{Simulation of Optics Box V2 without an outer wall between the Optics Box and Electronics Box.}
+    \label{fig:OB_V2_TA_2}
+\end{figure}
+
+The result, as expected, is that the optical system is much warmer. With a direct path to a 25°C source, much of the optics come very close to 25°C. It will eventually settle at these temperatures as there is a much more direct path to the 25°C source than the -30°C source of the baseplate. The temperatures of the optics are right at the top of the required temperature range, and should be more towards the centre of the range. However, the biggest issue with this design is that the temperature of the optics are based heavily on the temperature of the Electronics Box, which cannot be controlled as it is simply heat being dissipated from the electronics. There should be a better method of control than relying on this heat, so heaters are added to the design. For the next simulation, the outer wall is added back, so the temperature from the electronics box will be closer to what is seen in Figure \ref{fig:OB_V2_TA_1}. For this test, the heaters are all set to 30W, and the resulting simulation is shown in Figure \ref{fig:OB_V2_TA_3_3HEATERS}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V2_images/TA_25_-20_no_front_wall_three_heaters_labelled.JPG}
+    \caption{Simulation of Optics Box V2 with three heaters at 30W.}
+    \label{fig:OB_V2_TA_3_3HEATERS}
+\end{figure}
+
+The temperatures of the core components of the FTS and lenses are now roughly 23°C, which is in the required temperature range. It is on the high side but the power to the heaters can be controlled by turning them off it the temperature of the optics gets too high; thus the maximum temperature they will reach is 23°C. This design satisfies the temperature requirements. However, these temperatures are still assuming a constant temperature of 25°C from the electronics box. If the electronics were not dissipating as much power as expected, this temperature would fall, potentially causing the optics to fall below 10°C. To see what would happen if this temperature connection was removed, thus allowing full control of the optics just through heaters, a simulation was done with no set temperature on the side wall. To compensate, an extra heater was added on the optics plate. Through a few iterations, the heat powers also had to be increased immensely to allow the optics to stay within their required ranges: 25W for the heater attached to the FTS, and the three heaters attached to the breadboard are 100W, 50W, and 25W. The results of this simulation is in Figure \ref{fig:OB_V2_TA_4_4HEATERS}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V2_images/TA_-30_no_front_wall_four_heaters.JPG}
+    \caption{Simulation of Optics Box V2 without any heat flow from the electronics box, and four heaters.}
+    \label{fig:OB_V2_TA_4_4HEATERS}
+\end{figure}
+
+These temperatures are in the required temperature range, and near the bottom. However, just to maintain minimum allowable temperatures, the total power for the heaters was 200W, which is far beyond the reasonable power limit to just heat the optics box. To ensure that the power draw would be lower, the best option would be to transfer heat from the electronics box. However, another method to better control the optics temperature is explored in the next version of the Optics Box.
+
+In addition to the issues with trying to maintain proper optics box temperatures, there is a further issue with the mechanical design. It was discussed that the cost savings of the t-frame may not be worth the difficulties that come with it. It will be difficult to align all holes properly after building the T-Frame, due to its loose tolerances, and in addition it is difficult to attach the plates to the frame, where a special screw attachment is needed, and attaching it through various panels could prove difficult. A new version of the optics box would be created that removed the T-Frame structure, to allow for easier construction.
+
+\subsubsection{Electronics Box Design: Version 1 Thermal Analysis}
+This Electronics Box overall design remained largely unchanged in Version 2 of LIFE, but is discussed here as the initial thermal simulations were completed here, after the thermal simulations of the Optics Box Version 2 as described above. The main change before simulations was the addition of the LIFE \textit{Computer Stack}, the computer control centre of the instrument. This does not have stringent temperature requirements and does not dissipate a large amount of heat so does not have a large affect on the design, but must be considered for the purpose of space. As discussed in Section \ref{electronics_reqs}, most electronics have narrow temperature ranges and simulations must be completed to ensure that they will stay within these ranges during flight and in the lab.
+
+Initial simulations were completed with each part dissipating its typical heat power, and the baseplate temperature was kept at -20°C and is changed to different extremes in later tests. The first thermal test of the electronics box with these constraints is shown in Figure \ref{fig:EBOX_V1_TA_1_SQUARECENTRE}. With this design, the main issue is that there is not enough heat being dissipated from the DAQ boards, and the temperature reaches 51°C in the top right corner, which is above the maximum operating temperature of 45°C. The design must be altered so that more heat can be dumped to the gondola deck. To do this, the baseplate which the electronics are mounted to was made larger, extending out to the edge of the T-Frame. This allowed more thermal contact with the T-Frame so that more heat could dissipate into the frame, which could dissipate into the gondola deck. The results of this change are shown in Figure \ref{fig:EBOX_V1_TA_2_BIGGERCENTRE}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{chap3_images/LIFE_V2_images/TA_-20_square_centre_plate.JPG}
+    \caption{Initial thermal simulation of Electronics Box V1, with a base temperature of -20°C.}
+    \label{fig:EBOX_V1_TA_1_SQUARECENTRE}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V2_images/TA_-20_expanded_centre_plate.JPG}
+    \caption{Second thermal simulation of Electronics Box V1, with an expanded electronics mounting plate.}
+    \label{fig:EBOX_V1_TA_2_BIGGERCENTRE}
+\end{figure}
+
+In this model, the temperatures of the upper DAQ board is improved to be within a reasonable range, but now the lower DAQ board (on the bottom right) and the BMXS board are now dangerously close to their minimum temperature limits, as the cold from the gondola can make better contact with the electronics baseplate. This would be a recurring problem with the design of the electronics box; the DAQ board dissipate a high amount of power, and to avoid overheating, this power needs to be dissipated to the gondola baseplate. However, with too much connection to the baseplate, the electronics become too cold, as the minimum temperature value of the DAQ board is 0°C and the minimum value for the BMXS board is 5°C. It is unlikely that this design would have survived the extreme temperature case of the ascent. The further development of this thermal model is done alongside the development of the Optics Box thermal model, and in subsequent chapters are discussed together. 
 
 \subsection{LIFE Preliminary Design: Version 3}
-Second major update of LIFE, where the optics box is overhauled to follow cats design - Optics Box V2. Ebox is at V1 if it was not already at V1 over V0 (again double check) but probably does not need to be its own subsubsection.
+
+Similar to Version 2, the largest Version 3 change of LIFE was a widespread update to the optics box. It was built around the need for something easier to build, and is further based upon the CATS design. On the other side of the instrument, the electronics box received minor updates, adding electronics and further altering the design to improve the thermal properties of the instrument. A more thorough update of the electronics box occurs in Version 4 of the instrument. The most important update with this version is that the first full-instrument thermal simulations were completed, with both optics box and electronics box at once. This is discussed at the end of this section. A model of Version 3 of LIFE is shown in Figure \ref{fig:LIFE_V3}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{chap3_images/LIFE_V3_images/LIFE_V3.JPG}
+    \caption{Third version of LIFE, with an updated optics box.}
+    \label{fig:LIFE_V3}
+\end{figure}
 
 \subsubsection{Optics Box Design: Version 3}
-This version of the optics box was updated following CATS.
+Although the previous version of the optics box met most of the requirements, such as meeting the proper temperature range in different scenarios and holding a steady temperature, there were still some downsides to the design. Chiefly, there was the issue of it being very difficult to assemble. Although the costs were kept low buy buying a number of off the shelf components and keeping the cost of having to have components made by the machine shops low, it would be tough to maintain. With the T-Frame design, all walls would have to be bolted to the T-Frame, which would be a more difficult task once the instrument was more fully enclosed. It would be even more difficult when attaching the outer radiation plate walls through the inner walls, where the bolts would have to be done blindly. In addition to attaching plates, it would be difficult to attach the optics breadboard baseplate to the wall, as it would need to be done from the optics side (hence the bolts could not be in the optical path, and would also lead to a risk of bumping the optics). Finally, the largest issue would be the need to perform fixes, alignments and maintenance to the optical system when it was fully built. The T-Frame would need to be removed from one side of the box to allow access, which would be difficult, time intensive, and difficult to reinstall without altering the optical setup.
 
-\subsection{LIFE Preliminary Design: Version 4}
-Check if there were any updates to the optics box design, if there are it would only be a 2.1 upgrade. The main thing here is the ebox, which is updated to version 2.
+After discussions with the rest of the LIFE team, it was agreed that a trade-off of higher cost would be reasonable for a design that was easier to build and access. Thus, a new design was developed from the ground up, only keeping the core optics system on the breadboard baseplate the same. The new design was further developed from CATS: The walls would be thicker and have threaded holes in for bolting all walls together, thus only needing six pieces for inner walls, and removing the need for any inner structure. The outer radiation plate design would be kept the same, but would be easier to install as the outer plates could be attached directly to the inner plates through either threaded holes or bolts. The optical system baseplate could be directly bolted to the wall where necessary, from the opposite side of the optics. If the optics needed to be aligned or otherwise worked on, the entire baseplate could be easily unbolted from the other side and lifted out, or only one of side of the box needed to be removed to have access, rather than one side plus the T-Frame bracing. A model of the third version of the optics box is shown in Figure \ref{fig:OB_V3}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{chap3_images/LIFE_V3_images/Optics_Box_V2.JPG}
+    \caption{Third version of the optics box, based on the CATS design.}
+    \label{fig:OB_V3}
+\end{figure}
+
+The two main drawbacks to this new design was expense and weight. The weight was minimized by milling cavities from the thicker panels, similar to CATS, and the cover plate was chosen to be as thin as possible (the backplate was thick and not milled out to be able to hold the weight of the optics system). This new design would need to be entirely built by the machine shops, which caused a threefold increase in price. However it was decided that this design was worth the cost, and would be the core design for the rest of the design iterations.
+
+For the thermal analysis of this version, the core aspects of the thermal design are still present: The titanium spacers and radiation plates. However as the walls are rigidly connected together and there is no frame, heat would flow differently, from the gondola, radiation hitting the outer plates, and the power dissipated from the electronics on the breadboard. Another change from the previous design is leaving gaps between the radiation plates, which although leaves a gap for radiation to reach the  inner plate, removes heat flow between these outer plates and  better isolates the interior. Once again, there were a large number of thermal simulation iterations, and only a select few will be discussed here.
+
+Initial simulations for this box still assume a thermal connection between the optics box and ebox, so the outer radiation plate that faces the electronics box is set as 25°C. In this simulation, although all heaters are still in the model from Optics Box Version 1, only one is dissipating power (the bottom right), at 12.5W. The bottom plate is set at a temperature of -20°C. The FTS and MCT Cooler are dissipating their normal heat loads. The results of this simulation can be found in Figure \ref{fig:OB_V3_TA_1}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V3_images/TA_-20_deg_20_deg_12W_heater.JPG}
+    \caption{Simulation of Optics Box V3 with a heater and thermal connection to the Electronics Box.}
+    \label{fig:OB_V3_TA_1}
+\end{figure}
+
+The most important outcome of this simulation is it shows the effect of heat flow compared to the previous version. With just a 12.5W heater and heat dissipated from the electronics box, the temperatures are staying within their required limits, as compared to heat power of over 100W needed for the last simulation with T-Frame. The titanium spacers are still performing well in maintaining steady temperatures and isolating the inner box from the cold gondola baseplate. The next simulation shown is with no thermal connection between the electronics box and optics box, to allow better thermal control without relying on heat coming from the electronics box, which cannot be actively controlled. With only the top right heater being used with a power dissipation o9f 35W, Figure X shows the resulting simulation with a baseplate temperature of -30°C (extreme cold case).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V3_images/TA_-30_deg_35W_heater.JPG}
+    \caption{Simulation of Optics Box V3 with no thermal connection to the Electronics Box.}
+    \label{fig:OB_V3_TA_2}
+\end{figure}
+
+The temperatures are above their temperature ranges, even with the -30°C baseplate, which is good. Although this shows an overheating system, this means that with a controlled heater turning on and off this system will not drop below its minimum temperature, and the heater can be controlled so that it does not increase above its maximum temperature. However, although this system works how it needs to, one more thermal control method is implemented. Currently, although the inner optics box stays at a relatively uniform temperature due to the titanium spacers and outer radiation plates, it can still incur larger temperature oscillations than required for good optical operation. To prevent this and better isolate the optics, titanium spacers are added in between the optics breadboard and the optics wall. This is one of the most important parts of the thermal system to ensure a steady temperature in the optics, as it further decreases temperature oscillations as a result of a changing baseplate temperature. Also, it allows for a more uniform temperature across the whole system, allowing for further ease in removing the self-emission, and also lowers the necessary heater power as the heat can only escape through radiation. With the titanium spacers in place, a simulation is performed with a heater power of 20W and a baseplate temperature of -30°C, shown in Figure \ref{fig:OB_V3_TA_3_SPACERS_ADDED}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{chap3_images/LIFE_V3_images/TA_-30_deg_20W_heater_isolated_board.JPG}
+    \caption{Simulation of Optics Box V3 with titanium spacers added between the optics breadboard and the side wall.}
+    \label{fig:OB_V3_TA_3_SPACERS_ADDED}
+\end{figure}
+
+This model shows that the titanium spacers do have a signification effect. The temperatures of the optics are the similar to the previous simulation, but with 15W less heater power needed to maintain it, as that heat is not moving to the optics box walls unnecessarily. The temperature of the optics has less dependence on the gondola baseplate temperature as well. Overall this design is much improved over the previous design, using much less heater power while keeping temperatures steadier, and also being easier to build. This is the last major update for the Optics Box overall design, but further temperature simulations are done as part of the larger LIFE assembly, which includes the electronics box. This begins in Version 4 of the instrument.
+
+\subsection{LIFE Preliminary Design: Version 4} 
+The next version of LIFE is largely based around a thoroughly redesigned Electronics Box, and the initial thermal simulations that simulate both the electronics and optics boxes together on the same baseplate as they are in the full instrument assembly, so that both boxes can be analyzed at once and to see if there is any effect of these two boxes being together. As there is no major updates to the optics box there will only be a discussion of the redesigned Electronics Box before going into the full assembly thermal simulations.
 
 \subsubsection{Electronics Box Design: Version 2}
-This version of the electronics box was updated to not use T-Frame, similar to the CATS and optics box designs but without radiation plates.
+The previous version of the Electronics Box had the same design issues as the first two versions of the Optics Box, which was the use of T-Frame. As in the Optics Box, the use of T-Frame to build the EBox, although inexpensive, would have been difficult to build well, and the thermal design was made more difficult as well. As a result, the Electronics Box was redesigned from the ground up using a similar design to the Optics Box, using CATS as a baseline. The box would now be made from machined aluminum panels, which would bolt into each other directly, so that an inner frame did not need to be used. To save weight, the side panels had milled cavities. The heaviest part of this new design was the mounting plate for the electronics, the thickness of which was based on both the strength needed to mount the electronics securely, as well as dissipate heat effectively. This version still only contains the core electronics at this point; the next version of the box contains the rest of the necessary components. The layout of the electronics remains the same as the previous version, with the exception of the power supply, as a result of the mounting holes on the bottom plate. This model is shown in Figure \ref{fig:EBOX_V2}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{chap3_images/LIFE_V4_images/Ebox_V2.JPG}
+    \caption{Second version of the electronics box, following the design of the Optics Box.}
+    \label{fig:EBOX_V2}
+\end{figure}
+
+The thermal analysis of this box was done as a full assembly with the Optics Box. Notes about the thermal design of this new version is that there is now a better thermal connection between the box and the gondola deck. As a result, the heat from the DAQ boards can dissipate easily into the gondola deck, but in the cold case the BMXS board can go below its minimum required temperature, as well as the bottom DAQ board. To ensure this doesn't happen, a heater is placed next to the BMXS board to help warm it in the cold case, and the power supply (Which dissipates 45W) is placed nearby to maintain a temperature above 5°C.
+
+\subsubsection{LIFE Version 4 Thermal Analysis}
+Version 4 was the first model to be simulated as an full assembly, i.e. with the optics box and electronics box simulated at the same time on the same baseplate. Some notes about the thermal analysis of the electronics box are made previously. In terms of changes to the entire the rest of the model for the simulation, the unnecessary heaters are removed from the optics breadboard. This leaves one in the top right part of the breadboard, to try to maintain the FTS temperature. Initially, the boxes are flush with each other, allowing heat to transfer between them. Now that simulations are being performed for the entire model, tests for all three temperature cases will be performed: The cold case with a gondola deck temperature of -30°C, the average case with a gondola deck temperature of -20°C, and a warm (lab) case with a gondola deck temperature of 15°C. The optics box heater is set at 14W, 12W, and 0W for the cold, average, and warm cases respectively, and the electronics box heater is set at 150W, 60W, and 0W for the same respective scenarios. The results of these three simulations are shown in Figure \ref{LIFE_V4_TA_1_Optics} (Optics Box view) and Figure \ref{LIFE_V4_TA_1_Ebox} (Electronics Box view).
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.65\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_1.JPG}
+        \caption{Cold temperature case simulation for Optics Box, boxes connected.}
+        \label{fig:LIFE_V4_TA_Optics_1a}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.65\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_2.JPG}
+        \caption{Average temperature case simulation for Optics Box, boxes connected.}
+        \label{fig:LIFE_V4_TA_Optics_1b}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.65\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_3.JPG}
+        \caption{Warm temperature case simulation for Optics Box, boxes connected.}
+        \label{fig:LIFE_V4_TA_Optics_1c}
+    \end{subfigure}
+    \caption{Simulations for LIFE V4, Optics Box view, boxes connected.}
+    \label{LIFE_V4_TA_1_Optics}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.65\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_1_ebox.JPG}
+        \caption{Cold temperature case simulation for Electronics Box, boxes connected.}
+        \label{fig:LIFE_V4_TA_Ebox_1a}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.65\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_2_ebox.JPG}
+        \caption{Average temperature case simulation for Electronics Box, boxes connected.}
+        \label{fig:LIFE_V4_TA_Ebox_1b}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.65\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_3_ebox.JPG}
+        \caption{Warm temperature case simulation for Electronics Box, boxes connected.}
+        \label{fig:LIFE_V4_TA_Ebox_1c}
+    \end{subfigure}
+    \caption{Simulations for LIFE V4, Electronics Box view, boxes connected.}
+    \label{LIFE_V4_TA_1_Ebox}
+\end{figure}
+
+Overall, the results from these simulations are positive, but show areas needing improvement. Both boxes, with the exception of part of the BMXS board, survive the cold case quite well, and everything is operating well in the average case. In the warm case however, both the optics components and some of the electronics box components are overheating in the warm case. This is not as much of an issue for the electronics box, which will have fans to keep things cooler in the warm case (although this is still something that needs to be minimized if required), but the optics box needs to be running at least 10°C cooler than these simulations show. The main reason for the high temperatures in the optics box is due to the connection between the outer optics box wall and the electronics box wall. Although it will cause an increase in temperatures in the electronics box, the thermal connection between the boxes must be removed, so that the optics due not exceed their required temperature limits. The design was changed to have a 5mm gap between the boxes, so that heat can only be transferred through the baseplate. The same three scenarios are run as simulations, with the Optics Box heater now set as 18W, 14W, and 0W for the cold, average, and warm cases respectivly, and the Electronics BNox heater now set as 100W, 50W, and 0W. The results are presented in Figure \ref{LIFE_V4_TA_2_Optics} (Optics Box view) and Figure \ref{LIFE_V4_TA_2_Ebox} (Electronics Box view).
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_10.JPG}
+        \caption{Cold temperature case simulation for Optics Box, boxes not connected.}
+        \label{fig:LIFE_V4_TA_Optics_2a}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_11.JPG}
+        \caption{Average temperature case simulation for Optics Box, boxes not connected.}
+        \label{fig:LIFE_V4_TA_Optics_2b}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_12.JPG}
+        \caption{Warm temperature case simulation for Optics Box, boxes not connected.}
+        \label{fig:LIFE_V4_TA_Optics_2c}
+    \end{subfigure}
+    \caption{Simulations for LIFE V4, Optics Box view, with no direct thermal path between boxes.}
+    \label{LIFE_V4_TA_2_Optics}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.53\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_10_ebox.JPG}
+        \caption{Cold temperature case simulation for Electronics Box, boxes not connected.}
+        \label{fig:LIFE_V4_TA_Ebox_2a}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.53\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_11_ebox.JPG}
+        \caption{Average temperature case simulation for Electronics Box, boxes not connected.}
+        \label{fig:LIFE_V4_TA_Ebox_2b}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.53\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V4_images/TA_Full_Model_Iter_12_ebox.JPG}
+        \caption{Warm temperature case simulation for Electronics Box, boxes not connected.}
+        \label{fig:LIFE_V4_TA_Ebox_2c}
+    \end{subfigure}
+    \caption{Simulations for LIFE V4, Electronics Box view, with no direct thermal path between boxes..}
+    \label{LIFE_V4_TA_2_Ebox}
+\end{figure}
+
+With no thermal connection between the boxes, the optics box temperatures are now well within their required ranges. With a moderately sized heater in the optics box, it maintains a temperature of 20°C in the cold case and warm case, and in the warm case sits at roughly 18°C, in the middle of the range. However, with less heat being dissipated elsewhere, many components in the Electronics Box are now too warm. In the cold and average case, the components are well within their limits, and a smaller heater would be required as the heat is no longer transferring the optics box. However, in the warm case, the DAQ board is reaching temperatures in excess of 52°C, well beyond its limit, and cooling fans may not be enough to keep it cool through continuous operation in the lab. There are also more components to go in this box, which will be generating further heat. A complete redesign of the electronics layout within the electronics box would be necessary, both for thermal reasons and space reasons. With the optics box requirements met for all cases, the new design only effects the electronics box. This leads to the third version of the electronics box, in LIFE V5.
 
 \subsection{LIFE Preliminary Design: Version 5}
-The current design. Only go through the initial design changes here though (i.e. the addition of the blackbody electronics box, no changes to the optics box), and go into full detail about it after all other designs have been discussed.
+Towards the end of the thermal-mechanical design cycle of LIFE Version 4, the electronics design for LIFE was nearing completion. It was now known what other electronics components would need to be added: DC-DC Converters (power supplies to interface with the gondola power supplies), filters for the power lines, temperature controllers, a second computer stack, and the controller for the motor within the blackbody system. After a few different iterations of the design, it was determined that there was no good way to put all electronics into one box. The box would have to be too large for the volume requirements of the gondola, or components would have to be installed very close together. This leads to difficulty in building and repair of the electrical system, and also makes meeting the thermal requirements difficult. Thus for the the next version of LIFE, Version 5, a new box would be added to the design, holding some of the instruments electrical components. The new electrical components that were placed in this box were all components necessary to operate the blackbody system, it was thus named the \textit{Blackbody Electronics Box}, or BB Electronics Box. 
+
+Outside of this addition, there were few other changes. The Optics Box remains largely unchanged, except for the addition of smaller components such as the purge and desiccant system, which allows the box to be purged with nitrogen and kept dry before launch. The full model of LIFE V5, including this new box, is shown in Figure \ref{fig:LIFE_V5_prelim}.
+
+\begin{figure} % [TODO]: ADD LABELS HERE
+    \centering
+    \includegraphics[width=0.7\textwidth]{chap3_images/LIFE_V5_initial_images/LIFE_V5_prelim.JPG}
+    \caption{Initial version of LIFE Version 5, with the new Blackbody Electronics Box.}
+    \label{fig:LIFE_V5_prelim}
+\end{figure}
 
 \subsubsection{Electronics Box Design: Version 3}
-Go into detail about how some electronics needed to be added to this box, so some were transferred to a new box for space reasons. Could add blackbody electronics box as its own subsub section, but unlikely.
+Version 3 of the Electronics Box saw the addition of many new electronics components, which prompted a redesign of the layout. However, the main design for the layout was based upon a few requirements, from thermal simulations. The first was the location of the BMXS board. In the previous design, it was placed in the bottom right of the box, arbitrarily. As it has the most stringent minimum temperature of any component in the electronics box, it should not be placed that close to the bottom of the box, which can become the coldest. As a result, it was placed high up in the box, away from the cold baseplate. The issue with placing it in this position was the potential for overheating, as it is more difficult to dissipate heat and the BMXS also has the most stringent maximum temperature, but it was less of an issue than the freezing problem. The components which had low minimum temperatures, such as the DC-DC converter, Ethernet hub, and power supply, were all placed at the bottom, as they were able to withstand the cold. In addition, the DC-DC converter and the power supply both dissipated a high amount of power, and placing these close to the baseplate stopped the box from overheating. 
+
+In addition to the BMXS, the other parts that had a large effect on the layout were the DAQ/Pleora boards. These boards dissipated the most heat, while also having the second smallest temperature range, after the BMXS. It took many simulations to be able to place them in the correct location. First, their location was limited by their connection to the MCT Detector; sixteen cables connect the DAQ board to the detector, and are at a finite length of less than half a meter. They had to be placed at somewhat the same height as the detector in the optics box to minimize distance, and the cables would be able to reach. Moving past the physical location requirement, the power and thermal requirements would need to be balanced for the ideal location. If the boards were too high, they would not be able to dissipate enough heat in the hot case, and would overheat. However, if they were placed too low, they would freeze in the cold case if the Pleora board attachments fell below 0°C. These boards were moved up and down and placed in various orientations through many thermal simulation iterations until they would be able to meet the minimum temperature requirements in the cold case and the maximum temperature requirements in the hot case. The final location for these boards had only 5mm of error in moving up and down to continue staying within the required range. The heaters used and the resulting temperatures are described in the thermal section. Beyond these boards, the remaining components of temperature controllers and computer stacks could be placed somewhat freely, as they had wide temperature ranges and did not dissipate too much heat. The result of these layout iterations and thermal simulations is Version 3 of the Electronics Box, shown in Figure \ref{fig:EBOX_V3}.
+
+\begin{figure} % [TODO] LABEL
+    \centering
+    \includegraphics[width=0.5\textwidth]{chap3_images/LIFE_V5_initial_images/Ebox_V3_init.JPG}
+    \caption{Electronics Box Version 3, with more components added.}
+    \label{fig:EBOX_V3}
+\end{figure}
+
+Another addition to this box beyond Version 2 was the first version of the breakout board, or the wall through where external connections would be made. This was designed using a third party software outside SolidWorks and ordered independently, outside of the machine shops. There was also a protective cover placed over the DAQ boards as they were the most Electro-static discharge (ESD) sensitive components in the instrument. To stop any accidental contact with these boards during construction or repair, a cover was designed to be bolted over top, however it was decided later during the build that the implementation was not necessary. 
+
+\subsubsection{Blackbody Electronics Box Design: Version 1}
+This box housed components that were required to operate the blackbody system, and could not fit within the main Electronics Box while meeting size and space requirements. The core components of the new box are three temperature controllers, and a motor controller. Two of the three temperature controllers control the blackbody temperatures, the third would control the temperature of this new box, and the motor controller is for the blackbody system. While less thermally sensitive than the other boxes, the thermal design of this box was still important due to the temperature range of the motor controller. As described in the thermal section, a heater was added to this box for the purpose of keeping the temperature of the box above 0°C. A few more components would be added later, but these were most important for the thermal design. A model of this box is shown in Figure \ref{fig:BBEBOX_PRELIM}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{chap3_images/LIFE_V5_initial_images/BBEBox_V1_init.JPG}
+    \caption{Initial model of the Blackbody Electronics Box, which contains components which control the blackbodies.}
+    \label{fig:BBEBOX_PRELIM}
+\end{figure}
+
+\subsubsection{LIFE Version 5: Thermal Analysis}
+As with the previous thermal simulations for Version 4, the simulations were split into the three major scenarios: The cold case, average case, and warm case. As the thermal design of the Optics Box from the previous thermal analysis met requirements, this will mainly focus on the Electronics Box and Blackbody Electronics Box. Numerous iterations were done with different heater values, heater locations, and electronics locations to ensure that the most critical components would meet requirements. The Electronics Box heater was split in two, becoming two resistors wired in parallel, which would aid in redundancy should one of them fail during flight. Spreading them out also means a better heat distribution to delicate components, and requires smaller heaters. For the cold case, the thermal simulation inputs were as follows: the minimum temperature was lowered to -40°C, to better simulate what could be experienced during the ascent, even for a short period of time; The heaters in the electronics box dissipated 60W each, the optics heater dissipated 22W, and the Blackbody Electronics Box heater dissipated 60W. The model for the simulation is shown in Figure \ref{LIFE_V5_Prelim_TA_COLD}.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_1_ebox_no_labels.JPG}
+        \caption{Cold temperature case simulation for LIFE V5, Electronics Box view.}
+        \label{fig:LIFE_V5_TA_COLD_EBOX}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_1_no_labels.JPG}
+        \caption{Cold temperature case simulation for LIFE V5, Optics Box view.}
+        \label{fig:LIFE_V4_TA_COLD_OBOX}
+    \end{subfigure}
+    \caption{Front and rear view of LIFE V5 cold scenario simulation.}
+    \label{LIFE_V5_Prelim_TA_COLD}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_2_ebox_no_labels.JPG}
+        \caption{Average temperature case simulation for LIFE V5, Electronics Box view.}
+        \label{fig:LIFE_V5_TA_AVG_EBOX}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_2_no_labels.JPG}
+        \caption{Average temperature case simulation for LIFE V5, Optics Box view.}
+        \label{fig:LIFE_V4_TA_AVG_OBOX}
+    \end{subfigure}
+    \caption{Front and rear view of LIFE V5 average scenario simulation.}
+    \label{LIFE_V5_Prelim_TA_AVG}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_3_ebox_no_labels.JPG}
+        \caption{Warm temperature case simulation for LIFE V5, Electronics Box view.}
+        \label{fig:LIFE_V5_TA_WARM_EBOX}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_3_no_labels.JPG}
+        \caption{Warm temperature case simulation for LIFE V5, Optics Box view.}
+        \label{fig:LIFE_V4_TA_WARM_OBOX}
+    \end{subfigure}
+    \caption{Front and rear view of LIFE V5 warm scenario simulation.}
+    \label{LIFE_V5_Prelim_TA_WARM}
+\end{figure}
+
+The component temperatures meet the required temperature ranges. Although as a whole the DAQ boards drop below 0°C in some areas, the areas where the Pleora boards are attached stay above 0°C, as required. For the average case, the inputs were as follows: the baseplate temperature set as -20°C, the electronics box heaters dissipating 40W each, the Optics Box heater dissipates 14W, and the Blackbody Electronics Box heater dissipates 40W. The model for the average temperature scenario is shown in Figure \ref{LIFE_V5_Prelim_TA_AVG}.
+
+The temperature requirements are met for the average temperature case. Finally, examining the warm case, it must be ensured that the Electronics Box, and specifically the BMXS board, will not overheat. For this final case, the baseplate temperature set as 15°C, and all heaters are off. The model for the warm (lab) temperature scenario is shown in Figure \ref{LIFE_V5_Prelim_TA_WARM}.
+
+Here, the Electronics Box is close to overheating, but manages to stay within the required temperature range. Ideally, there is a margin of error from the simulation to the requirements, but this is the worst case scenario. This simulation assumes all electronics on full power, for an indefinite amount of time, with no fans. Most important will be the installation of fans, which will run while the instrument is in the lab, ensuring the components do not overheat. So, overall, this design meets all thermal requirements, and a final, detailed design (beyond a thermal design) can be created. However, one more version of LIFE was created, as an alternate to Version 5. It is described in the subsequent section.
 
 \subsection{LIFE Preliminary Design: Version 6}
-This was the weird design where we started transfering different things between eboxes, making two similarly sized eboxes.
+One issue with LIFE Version 5 is that although some components were moved to a separate Electronics Box, the main box still contains many components. Most importantly, it contains the components for the Optics Box system, i.e. the BMXS board, the DAQ board, and their power supply. The BMXS board and DAQ board are both highly ESD-sensitive components, and must be handled very carefully. The less time spent working around these components means a lower chance that they could be touched accidentally while working, potentially damaging these components. An idea was raised of moving all non-optics components into their own box, leaving all the components necessary for the operation of the optical system in their own box. This would lower time spent working around sensitive components and lowering the chance of unintended damage to the electronics. The Optics Box would remain the same. This new design was named LIFE Version 6, and a model is shown in Figure \ref{fig:LIFE_V6}.
 
-\subsubsection{Opto-Electronics Box: Version 1}
-This added all the optics electronics to one box by themselves.
+\begin{figure} % [TODO] LABEL
+    \centering
+    \includegraphics[width=0.7\textwidth]{chap3_images/LIFE_V6_images/LIFE_V6_img2.JPG}
+    \caption{LIFE Version 6, which shifted components between electronics boxes to better protect the optics electronics.}
+    \label{fig:LIFE_V6}
+\end{figure}
 
-\subsubsection{Electronics Box Design: Version 4}
-Smaller size for the main electronics box, now that the optics electronics (i.e. BMXS, Pleoras) are in their own box by themselves.
+The box that would contain all Electronics for the Optical System was named the \textit{Optics-Electronics Box}. It housed the two DAQ boards with the Pleora boards, the Ethernet hub, BMXS board, power supply, heaters for for the DAQ boards and BMXS, and their associated temperature controllers. The connections to the Electronics Box would be for power to the temperature controllers and heaters, and the Ethernet connection from the Ethernet hub to the computer stack. A model of this is shown in Figure \ref{fig:OPTOEBOX_V1}. The electronics box, holding the rest of the components, is shown in Figure \ref{fig:EBOX_V4}.
 
-\subsection{LIFE Preliminary Design: Version 7}
-Final new version, this was designed to be tilted for the appropriate field of view. Had a concept of an Optics Box V3, which would have either a tilted base or a tilted thor labs plate, but (luckily) this was scrapped not too far into development.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{chap3_images/LIFE_V6_images/optoebox_V1.JPG}
+    \caption{A new box, meant to replace the Blackbody Electronics Box, which houses only the optics electronics.}
+    \label{fig:OPTOEBOX_V1}
+\end{figure}
 
-\subsection{Final LIFE Preliminary Design: Version 5 Revisited}
-Final changes to V5, making the detailed model, more intense and detailed thermal analysis, etc. Can also include talking to shops maybe.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{chap3_images/LIFE_V6_images/EBOX_V4.JPG}
+    \caption{The fourth version of the Electronics Box, which here houses all electronics except the optical system components.}
+    \label{fig:EBOX_V4}
+\end{figure}
+
+An issue with this design is that the BMXS board now needs to be placed on the bottom, where the temperature changes can be much larger. This is why in Version 5 is was placed above the DAQ boards. The DAQ boards cannot be moved lower, as they would freeze if they were too close to the bottom as well. One option to improve the thermal characteristics would be to add more heaters around the BMXS board, but the instrument is already drawing a large amount of heater power, approaching the limit of what can be supplied by the gondola. The other option would be to move the BMXS board above the DAQ boards, however this would make the box almost as large as before, adding weight, which is also almost at the limit required for the gondola.
+
+The were no detailed thermal analysis done for this design. After redesigning, it was determined that it was not worth the time to perform many new thermal iterations and to redesign the connections between boxes and components, which had already been designed to a large extent for the previous design. The solution for the original problem, the ESD-sensitive components, was to place a cover over them, as discussed previously (this was added after Version 6, but was still part of the Version 5 design). Thus this new design was scrapped, and the final design chosen was Version 5. The next section goes into the detailed design of this model.
+
+\subsection{Final LIFE Design: Version 5 Revisited}
+The design chosen to go ahead with the detailed design was Version 5. The detailed design includes a number of changes to the mechanical design, such as adding components that are not necessary to the thermal model. These components include connectors and fasteners, cables, and components that were omitted from thermal designs due to their complex shape, such as detailed versions of boards. The blackbody design is also changed to show alterations made specifically for its use in the LIFE instrument. The final LIFE design also includes a more detailed thermal analysis, including radiation and other factors, which will have effects on characteristics such as the material coating. When the detailed design is complete, the model is sent to be manufactured.
+
+\subsubsection{Final Thermal Simulations}
+
+The thermal analysis was reexamined in more detail first. A notable exception to the previous thermal analyses was the exclusion of radiation. Through some initial tests, it was found that radiation would have a small effect on the final thermal model. It also exponentially increased the simulation solving time, and as iterations needed to happen quickly in the initial designs, it was ignored. As this is now the final design, it was included in the analysis. The initial assumption was correct, in that for a typical bare aluminum surface, the emissivity is very low, at roughly 0.1. Adding radiation to the design cooled components slightly, but a negligible amount. However, bare aluminum is not a good surface, especially with high altitude balloon flight, due to rust. Typically, the boxes are painted or anodized to counteract this.
+
+Both painting and anodizing have a large effect on the design. Painting, depending on the color and type of paint used, can increase emissivity by as much as 0.9. Anodization typically increases emissivity of aluminum to 0.77. This would dramatically reduce temperatures, especially in the Electronics Box, where temperatures are high. The box would get much too cold with an emissivity of 0.9, with some temperatures reaching 20°C below their recommended temperature ranges. The only option was to use anodization, and to improve the heating. The Blackbody Ebox and Optics Box remained in good temperature ranges even with anodization, so the only changes needed to be made were in the Electronics Box. This was done by changing the number of heaters from two to four, and moving them to locations as close as possible to delicate components, specifically the Pleora Boards and the BMXS board. Two heaters were placed close to the Pleora Board on the right side, which was closest to the bottom of the box. This would help counteract the cold temperature that resulted from being closer to the gondola deck. Another heater was placed close to the other Pleora board, which as it is higher did not get as cold. The final heater was placed next to the BMXS board. This is not shown in the following temperature simluations, but was made prior to construction.
+
+A final change made to the thermal design was the addition of a garolite spacer between the Optics Box and Blackbody system. To ensure the stability of the Optics Box during flight (as it was sitting on spacers and therfore not as sturdy as the other boxes), the Optics Box was to be bolted directly to the Blackbody box. This would help with stability as well as help line up the windows to the two systems. However, a metal spacer could not be used as that would introduce a new thermal path to the optical system. To ensure thermal insulation, a spacer was machined out of garolite, an epoxy material which has good thermal insulation properties while also having low offgasing properties.
+
+With these changes to the surface coating and the addition of the garolite spacer, another set of thermal simulations were ran. This consisted of radiation on all box surfaces, with an emissivity value of 0.77, and 30W for each heater in the Electronics Box, 55W for the heater in the Blackbody Electronics Box, and 22W for the heater in the Optics Box. The resulting simulations are given in Figures \ref{LIFE_V5_FINAL_TA_COLD}, \ref{LIFE_V5_FINAL_TA_AVG}, and \ref{LIFE_V5_FINAL_TA_WARM} for the cold, average, and warm scenarios respectively. 
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_1_ebox_no_labels.JPG}
+        \caption{Cold temperature case simulation for final LIFE model, Electronics Box view.}
+        \label{fig:LIFE_V5_FINAL_TA_COLD_EBOX}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_1_no_labels.JPG}
+        \caption{Cold temperature case simulation for final LIFE model, Optics Box view.}
+        \label{fig:LIFE_V5_FINAL_TA_COLD_OBOX}
+    \end{subfigure}
+    \caption{Front and rear view of the final LIFE model cold scenario simulation.}
+    \label{LIFE_V5_FINAL_TA_COLD}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_2_ebox_no_labels.JPG}
+        \caption{Average temperature case simulation for final LIFE model, Electronics Box view.}
+        \label{fig:LIFE_V5_FINAL_TA_AVG_EBOX}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_2_no_labels.JPG}
+        \caption{Average temperature case simulation for final LIFE model, Optics Box view.}
+        \label{fig:LIFE_V5_FINAL_TA_AVG_OBOX}
+    \end{subfigure}
+    \caption{Front and rear view of the final LIFE model average scenario simulation.}
+    \label{LIFE_V5_FINAL_TA_AVG}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_3_ebox_no_labels.JPG}
+        \caption{Warm temperature case simulation for final LIFE model, Electronics Box view.}
+        \label{fig:LIFE_V5_FINAL_TA_WARM_EBOX}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_V5_initial_images/Iteration_3_no_labels.JPG}
+        \caption{Warm temperature case simulation for final LIFE model, Optics Box view.}
+        \label{fig:LIFE_V5_FINAL_TA_WARM_OBOX}
+    \end{subfigure}
+    \caption{Front and rear view of the final LIFE model warm scenario simulation.}
+    \label{LIFE_V5_FINAL_TA_WARM}
+\end{figure}
+
+These simulations show that with the anodization, all components fall within their temperature limits. The closest components are the Pleora boards, but the heaters are well placed to heat them even if the rest of the DAQ board falls below 0°C. The only part of these board that must be above 0°C are where the Pleora boards are connected, as the DAQ boars minimum temperature is much lower at -40°C. The final choice to be made was what color anodization should be chosen. Ideally, white would be the best choice, to lower the absorptivity to zero, so in the case that the instrument did see the sun, it would not be as affected. This is why most instruments are painted white. However, white is not an option for anodization, due to the manufacturing process and the chemicals used. The next lightest options were a clear anodization coat, or a gold anodization. Gold was chosen for its high reflectivity, lowering the absorptivity if it sees the sun. This was the final change made to the thermal model before manufacturing, although as described later, a few fixes were needed following the results of the TVAC tests to align the model with what was seen during tests.
+
+\subsubsection{Final Mechanical Changes \& Models}
+Another part of the design that is updated is the Blackbody system. The bottom hot and warm blackbodies are removed, as they are not useful to the instrument anymore, and are heavy. Also removed are the viewport baffles. These are not useful in the infrared regime, but are mostly taken off because the instrument needs to view downwards at a slight angle of 2.86°. This is done by tilting the mirror downwards, rather than tilting the optical system or the optics box, which was deemed too difficult. With the mirror tilted downwards the FOV may clip the edge of the baffle, so to ensure that a full FOV is able to be imaged it is removed. It is also noted that the cold blackbody will not be used during flight, so the electronics to control and operate this blackbody are not present in the instrument; it is connected to an external system in the lab for operation.
+
+A number of mechanical changes are made. First, fasteners are also added to the model. This includes all bolts, washers, nuts, and spacers needed to connect boxes together and to fasten electronics. This is done to ensure that all holes are in the correct location in regards to other parts or the connection locations of the electronics, so that everything fits together as expected when sent to be manufactured. It also gives a number of fasteners to be purchased. The next step of the design was to added connectors and cables to the electronics design. The connectors were to ensure that the holes on the breakout boards were the correct size, and that there was enough room to make connections; if the connector of a component was too long it may overlap with a nearby component, which needs to be shifted. Also added in conjunction with this were models of the cables and wires, using the SolidWorks Routing tool. This allowed cable lengths to be determined in the model, to ensure that no wires are wasted and to ensure clean and efficient cable routing inside the boxes, keeping them out of the way of any sensitive components.
+
+The final model of the LIFE instrument before construction is shown in Figure \ref{fig:LIFE_V5_final}. The model for the final model of the Optics box with the detailed design of the Optical system, purge system and wiring design is shown in Figure \ref{fig:OBOX_FINAL}. The final models for the Electronics Boxes which includes wiring and connectors are shown in Figures \ref{fig:EBOX_FINAL} and \ref{fig:BBEBOX_FINAL}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{chap3_images/LIFE_V5_final_images/LIFE_V5_final_img.JPG}
+    \caption{The final model of LIFE.}
+    \label{fig:LIFE_V5_final}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{chap3_images/LIFE_V5_final_images/Optics_Box_final.JPG}
+    \caption{Final version of the Optics Box.}
+    \label{fig:OBOX_FINAL}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{chap3_images/LIFE_V5_final_images/EBOX_V3_final.JPG}
+    \caption{Final version of the Electronics Box.}
+    \label{fig:EBOX_FINAL}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.31\textwidth]{chap3_images/LIFE_V5_final_images/BBEbox_final.JPG}
+    \caption{Final version of the Blackbody Electronics Box.}
+    \label{fig:BBEBOX_FINAL}
+\end{figure}
+
+Renders were also completed of the final model, with the FOV included to show what the instrument would realistically look like once built. The FOV is shown as the pink shape coming from the instrument viewport.This render can be seen in Figure \ref{fig:LIFE_FINAL_RENDER}. With these models complete, parts were sent to be manufactured, which between the manufacturing and anodization, took roughly two months. The next section describes all steps from manufacturing until the high-altitude balloon launch in Timmins.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{chap3_images/LIFE_V5_final_images/side_view_bbebox.png}
+    \caption{A render of the LIFE final model, from SolidWorks.}
+    \label{fig:LIFE_FINAL_RENDER}
+\end{figure}
 
 \section{Pre-flight Construction \& Analysis}\label{preflight_const_analysis}
-Talk about the build, initial TVAC tests, and updates to final sims
+With the instrument being fully modelled and analyzed, and all requirements met, construction could begin. All components were manufactured by the Physics Machine Shops, with the exception of the anodization which was done by a third party, but the full construction afterwards was done by the LIFE team. The first subsection here discusses the construction process, and lessons learned from the construction that should be applied to further designs. Once the construction was complete and the instrument was up and running, Thermal Vacuum tests took place, to verify the thermal design and operation. Data is presented here on what was found during these tests. Following, the thermal model was updated using results of the thermal vacuum tests, to more closely align simulation temperatures with actual temperatures. This would provide data for later instruments on more accurate thermal simulations before TVAC tests take place. 
 
 \subsection{Construction}
-Pictures and description of building the instrument, any changes that were made and design considerations for next time (i.e. anodizing is non conductive!)
+The instrument was built through the Spring of 2019. The construction went smoothly, with the boxes being fully constructed through the course of a month, and the electronics being placed inside shortly after, and wired up inside the ISAS clean room. A few images of the build process is shown in Figures XXXXXX.
+
+The most important issue that came up during the construction was an unexpected issue with the anodization, which is that it is non-conductive. To properly install the electronics, they need to be grounded through the box to the baseplate, which is grounded to the gondola. However, as the anodization is non-conductive, as they were originally installed, they were all floating grounds, which was not permissible by the CSA for the flight. Thus the instrument needed to be disassembled, and the anodization removed in one area where the component would be placed. Anodization was also removed on the edges of parts of the boxes, so that all boxes were electrically connected. Finally, the anodization layer was removed around bolt holes near the bottom, so an electrical connection was formed through the bolt to the gondola baseplate. Another issue this would cause, that was only realized after manufacturing, is that anodization also has effect on the thermal conductivity. All electronics in the thermal model were assumed bonded to the mounting plates, which was a good assumption as thermal paste was applied between the components and the wall to maximize thermal transfer. However, anodization can lower the thermal conductivity between the component and the wall, but there are no studies that show any definite numbers, with a thermal conductivity decrease anywhere in the range of 5-20\%. It was found later through the thermal tests that this would not be an issue however.
+
+Another aspect of the build that made things more difficult, that should be improved upon in the future, was the different bolts necessary. While there were not many different types of bolts used, different lengths were needed for a variety of different parts of the instrument. This made construction and repairs difficult. In future designs, the length of bolts used should be attempted to be kept the same, and at least minimized. This saves on cost and time to assemble and disassemble.
 
 \subsection{TVAC Tests}\label{TVAC_tests}
-Results of the TVAC tests.
+The first verification of the thermal model would take place during the Thermal Vacuum (TVAC) chamber tests. Each instrument from the research group that will fly on a high-altitude balloon is subjected to these tests, to ensure that it will survive the flight. The vacuum environment and cold baseplate of the TVAC attempts to simulate as closely as possible the environment that the instrument will face. The TVAC chamber itself consists of a large roughly 1m\textsuperscript{3} interior cavity to which the instrument is placed. Liquid Nitrogen runs through the bottom baseplate, the temperature of which can be set. Most often during tests, it is set as -40°C, the lowest that the gondola baseplate will get during the float portion of the flight. The vacuum pump decreases the pressure to 3-4 Torr.
+
+Two TVAC tests were performed on LIFE, the first of which was used as a verification for different components and for some imaging tests, the second was used more for thermal tests. Each test ran the instrument as it would during flight, taking measurements and operating from a nearby computer. Temperatures were measured both from the internal temperature sensors and from added external temperature sensors that were fed through the wall of the chamber to an external computer for measurement. The instrument ran well for all tests, and stayed within the required temperature limits. The temperature results of the first and second TVAC tests are shown in Figures X and Y, respectively.
+% ADD TVAC HK PLOTS HERE
+
+Overall, it was a success. The test took place over the course of eight hours, the maximum expected length of the flight. Some anomalies in the data were due to testing, and were expected. For example, the temperature spike seen around the optics area was due to a heater being installed here, and power supplied during this time. The purpose of adding this heater was not for the purpose of cold survival, but for testing the effect of the temperature change of the optics on the self-emission. Although the temperatures were within their required ranges however, temperatures were not quite what was expected from the thermal model. The results of the TVAC tests provided data for the improvement of the LIFE thermal model, removing assumptions and making the model more accurate. This is described in the next section.
 
 \subsection{Final Simulations}
-Updates to simulations based on the TVAC tests.
+As the second TVAC test most accurately simulated what the instrument was expected to experience during flight, the thermal model was compared to these values. The largest difference between the TVAC test data and what was expected from the model was not the temperatures, but the heater power required to keep the instrument at those temperatures. The power supplied to the heaters was up to 40W less than the expected power of 60W for the electronics, and 20W less for the Blackbody Electronics power. The Optics Box needed 10W less than expected.
+
+The reason behind this was determined to be the thermal resistance between the baseplate and the boxes. As described in Section \ref{Conduction_sec}, heat flow across a gap is very difficult to calculate. The error is so large that it was recommended to us by the CSA expert we consulted to just determine this through tests, and apply what is learned to the model. That is exactly what happened here with LIFE; In the pre-TVAC simulations, the joint connection between the baseplate and boxes is assumed to be bonded, or have a thermal resistance of 0. This was a large assumption that was expected to be wrong. Specifically, with an anodized surface, the thermal resistance will be high, as the roughness of anodization decreases the surface contact through which heat can flow. So, with a range of possible power values for the heaters from the current readings, and known temperatures, a number of iterations were completed of the thermal model to estimate a value for this thermal resistance. 
+
+These tests used transient analysis, as the tests in the TVAC chamber were a finite length. A time was chosen towards the end of the test to compare temperature values, which was well after the temperatures were steady. The temperatures of all internal temperature sensors at 700 minutes into the test are described in Table \ref{TVAC_temps}, these would try to be matched in the simulation. Labels on the resulting simulation models in Figure \ref{LIFE_V5_FINAL_TVAC_TA} match the locations of these sensors.
+
+After 22 iterations of different heater values and thermal resistances, a model was created wherein the heater powers were in the expected ranges from the current, and the critical temperatures were matched to within 1°C of what was seen in the tank. The thermal model for the final iteration is shown in Figure \ref{LIFE_V5_FINAL_TVAC_TA}, with labels. A summary of the resulting temperatures, compared to what was seeing during the test, is provided in Table \ref{TVAC_temps}.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_FINAL_SIMS/Test_22_Ebox_Labels.JPG}
+        \caption{Final simulation of LIFE thermal model, based on updates from TVAC data, Electronics Box view.}
+        \label{fig:LIFE_V5_FINAL_TVAC_TA_EBOX}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chap3_images/LIFE_FINAL_SIMS/Test_22_BBEbox_Labels.JPG}
+        \caption{Final simulation of LIFE thermal model, based on updates from TVAC data, Optics Box view.}
+        \label{fig:LIFE_V5_FINAL_TVAC_TA_OBOX}
+    \end{subfigure}
+    \caption{Front and rear view of the final LIFE model after updates to the thermal model based on the TVAC test data.}
+    \label{LIFE_V5_FINAL_TVAC_TA}
+\end{figure}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c| }
+ \hline
+ \rowcolor{lightgray}
+ Sensor & Simulated Temperature (°C) & Actual Temperature (°C)\\
+  \hline
+  \hline
+  BB EBox - Floor & -13.5 & -13.5\\
+ \hline
+  BB EBox - Motor Controller & 17.7 & 17.6\\
+ \hline
+ Optics Box - FTS Left Side & 16.7 & 16.7\\
+ \hline
+ Optics Box - FTS Right Side & 16.6 & 16.6\\
+ \hline
+ Optics Box - MCT Mount & 20.5 & 29.4\\
+ \hline
+ Optics Box - Corner Mirror & 9.1 & 10.1\\
+ \hline
+ Optics Box - Thor Labs Plate & 16.6 & 15.6\\
+ \hline
+ Optics Box - Floor & -7.3 & -9.7\\
+ \hline
+ EBox - Floor & -2.3 & -2.2\\
+ \hline
+ EBox - Top Back Wall & 13.8 & 12.4\\
+ \hline
+\end{tabular}
+\end{center}
+\caption{Temperature sensor values 700 minutes into SolidWorks simulation and TVAC test.}
+ \label{TVAC_temps}
+\end{table}
+
+The final values used for this simulation are 5W per heater in the Electronics Box (a total of 20W), 49W power for the heater in the Blackbody Electronics Box, and 10.6W for the heater in the Optics Box. These all fell within the ranges expected by the currents. The final value for the thermal resistance was 0.16 W/mK, which is in the expected range for a compressed gap between two aluminum panels. Throughout the test, the base temperature was set to -40°C (as the TVAC baseplate was, and the initial temperature was 25°C for all components. One other aspect that required some iteration was the ambient temperature, as required for the radiation simulation input. For the TVAC test, this ambient temperature would be the temperature of the walls of the TVAC chamber, which were estimated to be 5°C (as these are not actively cooled, and not thermally connected to the liquid nitrogen cooled baseplate).
+
+With updates to the simulation, most of the critical temperatures are within 1°C of the actual temperature, with some close as 0.1°C to the actual temperature. A notable value to point out, which is the largest difference between actual and simulated, is the MCT Mount sensor. This would turn out to be an error with a connection in the simulation, which was fixed after the flight for those flight comparisons, as was not an error with the simulation inputs. With a model of the thermal model instrument now updated and accurate, and the instrument successfully passed thermal tests, the instrument was ready to fly in Timmins.
